@@ -23,29 +23,26 @@
 package net.katsstuff.arbaro.gui;
 
 import java.awt.Component;
-
 import net.katsstuff.arbaro.export.Exporter;
 import net.katsstuff.arbaro.export.ShieldedExporter;
 
 /**
  * @author wolfram
- *
  */
 public class ShieldedGUIExporter extends ShieldedExporter {
+
 	Component parent;
-	
+
 	/**
-	 * @param exporter
+	 *
 	 */
 	public ShieldedGUIExporter(Component parent, Exporter exporter) {
 		super(exporter);
 		this.parent = parent;
 	}
-	
+
 	protected void showException(Exception e) {
 		super.showException(e); // output to Console as well
 		ShowException.msgBox(parent, "Export error", e);
 	}
-
-
 }

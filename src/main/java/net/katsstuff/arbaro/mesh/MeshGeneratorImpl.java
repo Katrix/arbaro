@@ -22,32 +22,34 @@
 
 package net.katsstuff.arbaro.mesh;
 
-import net.katsstuff.arbaro.tree.Tree;
-import net.katsstuff.arbaro.export.Progress;
 import net.katsstuff.arbaro.export.Console;
+import net.katsstuff.arbaro.export.Progress;
+import net.katsstuff.arbaro.tree.Tree;
 
 /**
  * @author wolfram
- *
  */
 class MeshGeneratorImpl implements MeshGenerator {
-//	Params params;
+
+	//	Params params;
 	public boolean useQuads;
-	
-	public boolean getUseQuads() { return useQuads; } 
+
+	public boolean getUseQuads() {
+		return useQuads;
+	}
 
 	public MeshGeneratorImpl(boolean useQuads) {
 		super();
 		this.useQuads = useQuads;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.mesh.MeshGenerator#createStemMesh(net.katsstuff.arbaro.tree.Tree, net.katsstuff.arbaro.export.Progress)
 	 */
 	public Mesh createStemMesh(Tree tree, Progress progress) {
-		progress.beginPhase("Creating mesh",tree.getStemCount());
+		progress.beginPhase("Creating mesh", tree.getStemCount());
 		outputVertexInfo(tree);
-		
+
 		Mesh mesh = new Mesh(tree.getLevels());
 /*		for (int t=0; t<trunks.size(); t++) {
 			((Stem)trunks.elementAt(t)).addToMesh(mesh,true,useQuads);
@@ -56,43 +58,43 @@ class MeshGeneratorImpl implements MeshGenerator {
 		*/
 		MeshCreator meshCreator = new MeshCreator(/*params,*/ mesh, -1, useQuads, progress);
 		tree.traverseTree(meshCreator);
-		
+
 		progress.endPhase();
 		return mesh;
 	}
 
 	private void outputVertexInfo(Tree tree) {
 		Console.verboseOutput("Output: mesh");
-		for (int l=0; l<Math.min(tree.getLevels(),4); l++) {
+		for (int l = 0; l < Math.min(tree.getLevels(), 4); l++) {
 			Console.verboseOutput("  Level " + l + ": "
-					+ tree.getVertexInfo(l));
+								  + tree.getVertexInfo(l));
 		}
 	}
-	
+
 	// FIXME move to MeshFactory
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.mesh.MeshGenerator#createStemMeshByLevel(net.katsstuff.arbaro.tree.Tree, net.katsstuff.arbaro.export.Progress)
 	 */
 	public Mesh createStemMeshByLevel(Tree tree, Progress progress) {
-		progress.beginPhase("Creating mesh",tree.getStemCount());
+		progress.beginPhase("Creating mesh", tree.getStemCount());
 		outputVertexInfo(tree);
 
 		Mesh mesh = new Mesh(tree.getLevels());
-		
-		for (int level=0; level < tree.getLevels(); level++) {
+
+		for (int level = 0; level < tree.getLevels(); level++) {
 			MeshCreator meshCreator = new MeshCreator(mesh, level, useQuads, progress);
 			tree.traverseTree(meshCreator);
 		}
-			
+
 		progress.endPhase();
 		return mesh;
 	}
-	
+
 	// FIXME move to MeshFactory
 	public LeafMesh createLeafMesh(Tree tree, boolean useQuads) {
 		return new LeafMesh(tree.getLeafShape(),
-				tree.getLeafLength(),tree.getLeafWidth(),
-				tree.getLeafStemLength(),useQuads);
+			tree.getLeafLength(), tree.getLeafWidth(),
+			tree.getLeafStemLength(), useQuads
+		);
 	}
-	
 }

@@ -22,8 +22,8 @@
 
 package net.katsstuff.arbaro.params;
 
-import java.util.Locale;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class FloatFormat {
 
@@ -36,9 +36,9 @@ public class FloatFormat {
 		instance = form;
 	}
 
-    public static NumberFormat getInstance() {
-	return instance;
-    }
+	public static NumberFormat getInstance() {
+		return instance;
+	}
 }
 
 

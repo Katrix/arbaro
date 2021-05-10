@@ -22,37 +22,41 @@
 
 package net.katsstuff.arbaro.mesh;
 
-import net.katsstuff.arbaro.export.Progress;
 import net.katsstuff.arbaro.export.Console;
-import net.katsstuff.arbaro.tree.*;
+import net.katsstuff.arbaro.export.Progress;
+import net.katsstuff.arbaro.tree.Leaf;
+import net.katsstuff.arbaro.tree.Stem;
+import net.katsstuff.arbaro.tree.Tree;
+import net.katsstuff.arbaro.tree.TreeTraversal;
 
 /**
  * Create a mesh from the tree's stems using then TreeTraversal interface
- * 
- * @author wolfram
  *
+ * @author wolfram
  */
 
 class MeshCreator implements TreeTraversal {
+
 	Mesh mesh;
 	Tree tree;
 	Progress progress;
 	int level; // only stems of this level should be created
 	boolean useQuads;
 //	Params params;
-	
+
 	//private Stack meshparts;
 
-	public MeshCreator(/*Params params,*/ Mesh mesh, int level, boolean useQuads, 
-			Progress progress) {
+	public MeshCreator(/*Params params,*/ Mesh mesh, int level, boolean useQuads,
+		Progress progress
+	) {
 		super();
 //		this.params = params;
-		this.mesh=mesh;
-		this.level=level;
+		this.mesh = mesh;
+		this.level = level;
 		this.useQuads = useQuads;
 		this.progress = progress;
 	}
-	
+
 	public boolean enterStem(Stem stem) {
 		// TODO instead of addToMesh, the traversal should
 		// proceed into segments and subsegments itself
@@ -61,35 +65,34 @@ class MeshCreator implements TreeTraversal {
 
 		if (level >= 0 && stem.getLevel() < level) {
 			return true; // look further for stems
-			
 		} else if (level >= 0 && stem.getLevel() > level) {
 			return false; // go back to higher level
-			
-		} else { 
+		} else {
 //			try {
-				// FIXME: for better performance create only
-				// one MeshPartCreator and change stem for every stem
-				MeshPartCreator partCreator = new MeshPartCreator(stem, /*params,*/ useQuads);
-				MeshPart meshpart = partCreator.createMeshPart(progress);
-				if (meshpart != null) {
-					mesh.addMeshpart(meshpart);
-				}
-				
-				// show progress
-				if (stem.getLevel()<=1 && ! stem.isClone()) 
-					Console.progressChar();
-				progress.incProgress(1);
-				return true; // proceed
-				
+			// FIXME: for better performance create only
+			// one MeshPartCreator and change stem for every stem
+			MeshPartCreator partCreator = new MeshPartCreator(stem, /*params,*/ useQuads);
+			MeshPart meshpart = partCreator.createMeshPart(progress);
+			if (meshpart != null) {
+				mesh.addMeshpart(meshpart);
+			}
+
+			// show progress
+			if (stem.getLevel() <= 1 && !stem.isClone()) {
+				Console.progressChar();
+			}
+			progress.incProgress(1);
+			return true; // proceed
+
 //			} catch(Exception e) {
 //				e.printStackTrace(System.err);
 //				throw new TraversalException(e.toString());
 //			}
-		}	
+		}
 	}
-	
+
 	public boolean enterTree(Tree tree) {
-		this.tree = tree; 
+		this.tree = tree;
 		return true;
 	}
 

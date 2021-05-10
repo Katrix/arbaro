@@ -23,29 +23,29 @@
 package net.katsstuff.arbaro.gui;
 
 import java.awt.Component;
-
 import net.katsstuff.arbaro.tree.ShieldedTreeGenerator;
 import net.katsstuff.arbaro.tree.TreeGenerator;
 
 /**
  * @author wolfram
- *
  */
 public class ShieldedGUITreeGenerator extends ShieldedTreeGenerator {
+
 	Component parent;
-	
+
 	/**
-	 * @param treeGenerator
+	 *
 	 */
-	public ShieldedGUITreeGenerator(Component parent,
-			TreeGenerator treeGenerator) {
+	public ShieldedGUITreeGenerator(
+		Component parent,
+		TreeGenerator treeGenerator
+	) {
 		super(treeGenerator);
 		this.parent = parent;
 	}
-	
+
 	public void showException(Exception e) {
 		super.showException(e); // output to Console as well
 		ShowException.msgBox(parent, "Tree generation error", e);
 	}
-
 }

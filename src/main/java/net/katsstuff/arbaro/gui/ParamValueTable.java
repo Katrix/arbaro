@@ -22,40 +22,48 @@
 
 package net.katsstuff.arbaro.gui;
 
-import java.util.Iterator;
-import java.util.TreeMap;
-
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import java.util.Iterator;
+import java.util.TreeMap;
+import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JComboBox;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.*;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.BorderFactory;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.*;
-import javax.swing.AbstractCellEditor;
-
-import net.katsstuff.arbaro.params.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import net.katsstuff.arbaro.params.AbstractParam;
+import net.katsstuff.arbaro.params.IntParam;
+import net.katsstuff.arbaro.params.LeafShapeParam;
+import net.katsstuff.arbaro.params.ParamException;
+import net.katsstuff.arbaro.params.Params;
+import net.katsstuff.arbaro.params.ShapeParam;
 
 public final class ParamValueTable extends JPanel {
+
 	private static final long serialVersionUID = 1L;
 
 	JTable table;
@@ -67,7 +75,7 @@ public final class ParamValueTable extends JPanel {
 	int groupLevel;
 	ParamTableModel tableModel;
 
-	static final Color bgClr = new Color(250,250,240);
+	static final Color bgClr = new Color(250, 250, 240);
 
 	ChangeEvent changeEvent;
 
@@ -75,6 +83,7 @@ public final class ParamValueTable extends JPanel {
 	/********************** LeafShapeBox *****************************/
 
 	class LeafShapeBox extends JComboBox {
+
 		private static final long serialVersionUID = 1L;
 
 		public LeafShapeBox() {
@@ -86,14 +95,14 @@ public final class ParamValueTable extends JPanel {
 			//fill
 			String[] items = LeafShapeParam.values();
 
-			for (int i=0; i<items.length; i++) {
+			for (int i = 0; i < items.length; i++) {
 				addItem(items[i]);
 			}
 		}
 
 		public void setValue(AbstractParam p) {
 			// select item
-			for (int i=0; i<getItemCount(); i++) {
+			for (int i = 0; i < getItemCount(); i++) {
 				if (getItemAt(i).equals(p.getValue())) {
 					setSelectedIndex(i);
 					return;
@@ -102,14 +111,14 @@ public final class ParamValueTable extends JPanel {
 		}
 
 		public String getValue() {
-			return (String)getSelectedItem();
+			return (String) getSelectedItem();
 		}
-
 	}
 
 	/********************** ShapeBox *****************************/
 
 	class ShapeBox extends JComboBox {
+
 		private static final long serialVersionUID = 1L;
 
 		//	ParamFrame parent;
@@ -122,17 +131,17 @@ public final class ParamValueTable extends JPanel {
 //
 //		final String[] values = {"0","1","2","3","4","5","6","7","8"};
 
-		ImageIcon [] shapeIcons;
+		ImageIcon[] shapeIcons;
 
 		/**
 		 * Returns an ImageIcon, or null if the path was invalid.
 		 *
-		 * @param path
-		 * @param description
 		 * @return ImageIcon, or null if the path was invalid
 		 */
-		protected ImageIcon createImageIcon(String path,
-				String description) {
+		protected ImageIcon createImageIcon(
+			String path,
+			String description
+		) {
 			java.net.URL imgURL = ShapeBox.class.getResource(path);
 			if (imgURL != null) {
 				return new ImageIcon(imgURL, description);
@@ -145,7 +154,7 @@ public final class ParamValueTable extends JPanel {
 		public ShapeBox(/*ParamValueTable pnt*/) {
 			super();
 //			parent = pnt;
-			ShapeRenderer sr= new ShapeRenderer();
+			ShapeRenderer sr = new ShapeRenderer();
 			//sr.setPreferredSize(new Dimension(200, 130));
 			setRenderer(sr);
 			//ShapeParam param = (ShapeParam)tree.getParam("Shape");
@@ -153,35 +162,37 @@ public final class ParamValueTable extends JPanel {
 			//fill
 			String[] items = ShapeParam.values();
 			shapeIcons = new ImageIcon[items.length];
-			for (int i=0; i<items.length; i++) {
+			for (int i = 0; i < items.length; i++) {
 				// values[i] = new Integer(i);
-				shapeIcons[i] = createImageIcon("images/shape"+i+".png",items[i]);
-				addItem(""+i);
+				shapeIcons[i] = createImageIcon("images/shape" + i + ".png", items[i]);
+				addItem("" + i);
 			}
 		}
 
 		public void setValue(AbstractParam p) {
 			// select item
-			setSelectedIndex(((IntParam)p).intValue());
+			setSelectedIndex(((IntParam) p).intValue());
 		}
 
 		public String getValue() {
-			return ""+getSelectedIndex();
+			return "" + getSelectedIndex();
 		}
 
 		class ShapeRenderer extends JLabel implements ListCellRenderer {
+
 			private static final long serialVersionUID = 1L;
 
 			public ShapeRenderer() {
 				setOpaque(true);
 			}
+
 			public Component getListCellRendererComponent(
-					JList list,
-					Object value,
-					int index,
-					boolean isSelected,
-					boolean cellHasFocus)
-			{
+				JList list,
+				Object value,
+				int index,
+				boolean isSelected,
+				boolean cellHasFocus
+			) {
 				int myIndex = Integer.parseInt(value.toString());
 
 				if (isSelected) {
@@ -195,19 +206,23 @@ public final class ParamValueTable extends JPanel {
 				//Set the icon and text.  If icon was null, say so.
 				ImageIcon icon;
 //				if (myIndex>=0 && myIndex<9) {
-					icon = shapeIcons[myIndex];
-					setIcon(icon);
-					setText(icon.getDescription());
+				icon = shapeIcons[myIndex];
+				setIcon(icon);
+				setText(icon.getDescription());
 //				};
 
 				return this;
 			}
-		};
+		}
 
-	};
+		;
+	}
+
+	;
 
 
 	class CellEditor extends AbstractCellEditor implements TableCellEditor {
+
 		private static final long serialVersionUID = 1L;
 
 		AbstractParam param;
@@ -238,7 +253,6 @@ public final class ParamValueTable extends JPanel {
 					editingStopped();
 				}
 			});
-
 		}
 
 		public Object getCellEditorValue() {
@@ -258,13 +272,15 @@ public final class ParamValueTable extends JPanel {
 			return param;
 		}
 
-		public Component getTableCellEditorComponent(JTable table,
-				Object value,
-				boolean isSelected,
-				int row,
-				int column) {
+		public Component getTableCellEditorComponent(
+			JTable table,
+			Object value,
+			boolean isSelected,
+			int row,
+			int column
+		) {
 			//			currentColor = (Color)value;
-			param = (AbstractParam)value;
+			param = (AbstractParam) value;
 
 			if (param.getName().equals("Shape")) {
 				shapeBox.setValue(param);
@@ -282,17 +298,20 @@ public final class ParamValueTable extends JPanel {
 	}
 
 	class CellRenderer extends DefaultTableCellRenderer {
+
 		private static final long serialVersionUID = 1L;
 
-		public CellRenderer() { super(); }
+		public CellRenderer() {
+			super();
+		}
 
 		public void setValue(Object value) {
 			// alignment for parameter type
 			if (value.getClass() == ShapeParam.class) {
 				setHorizontalAlignment(LEFT);
 				setText(""
-						+((ShapeParam)value).intValue()
-						+ " - "+value.toString());
+						+ ((ShapeParam) value).intValue()
+						+ " - " + value.toString());
 			} else if (value.getClass() == LeafShapeParam.class) {
 				setHorizontalAlignment(LEFT);
 				setText(value.toString());
@@ -304,29 +323,37 @@ public final class ParamValueTable extends JPanel {
 				setText(value.toString());
 			}
 
-			this.setEnabled(((AbstractParam)value).getEnabled());
+			this.setEnabled(((AbstractParam) value).getEnabled());
 		}
 	}
 
 
 	class ParamTableModel extends AbstractTableModel {
+
 		private static final long serialVersionUID = 1L;
 
-		public int getColumnCount() { return 2; }
+		public int getColumnCount() {
+			return 2;
+		}
+
 		public int getRowCount() {
-			TreeMap params = par.getParamGroup(groupLevel,groupName);
+			TreeMap params = par.getParamGroup(groupLevel, groupName);
 			return params.size();
 		}
+
 		public Object getValueAt(int row, int col) {
 			// FIXME: maybe the params should be stored directly in the model
 
-			TreeMap params = par.getParamGroup(groupLevel,groupName);
+			TreeMap params = par.getParamGroup(groupLevel, groupName);
 			int r = 0;
-			for (Iterator e=params.values().iterator(); e.hasNext();) {
-				AbstractParam p = (AbstractParam)e.next();
-				if (row==r++) {
-					if (col==0) return p.getNiceName();
-					else return p;
+			for (Iterator e = params.values().iterator(); e.hasNext(); ) {
+				AbstractParam p = (AbstractParam) e.next();
+				if (row == r++) {
+					if (col == 0) {
+						return p.getNiceName();
+					} else {
+						return p;
+					}
 
 					//					panl.add(Box.createHorizontalGlue());
 					//					if (p.getName().equals("Shape")) {
@@ -335,7 +362,6 @@ public final class ParamValueTable extends JPanel {
 					//						ShapeBox sh = new ShapeBox(parent,p);
 					//						sh.addFocusListener(groupListener);
 					//						panl.add(sh);
-
 
 				}
 			}
@@ -374,7 +400,7 @@ public final class ParamValueTable extends JPanel {
 				// propagate change to other components, e.g. the preview
 				fireStateChanged();
 			} catch (Exception e) {
-				if (e.getClass()==ParamException.class) {
+				if (e.getClass() == ParamException.class) {
 					System.err.println(e);
 					showError(e);
 				} else {
@@ -385,14 +411,15 @@ public final class ParamValueTable extends JPanel {
 		}
 
 		public boolean isCellEditable(int row, int col) {
-			return (col==1) && ((AbstractParam)getValueAt(row,col)).getEnabled();
+			return (col == 1) && ((AbstractParam) getValueAt(row, col)).getEnabled();
 		}
 
 		//		public Class getColumnClass(int c) {
 		//	        return getValueAt(0, c).getClass();
 		//	    }
+	}
 
-	};
+	;
 
 
 	public ParamValueTable(Params params) {
@@ -400,28 +427,29 @@ public final class ParamValueTable extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(bgClr);
 
-		this.par=params;
+		this.par = params;
 
 		tableModel = new ParamTableModel();
 		table = new JTable(tableModel);
 		table.setBackground(bgClr);
 		table.setShowVerticalLines(false);
-		table.setIntercellSpacing(new Dimension(4,0));
-		table.setRowHeight((int)(table.getRowHeight()*1.3));
+		table.setIntercellSpacing(new Dimension(4, 0));
+		table.setRowHeight((int) (table.getRowHeight() * 1.3));
 
 		TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
 
 		TableColumn paramColumn = table.getColumnModel().getColumn(0);
 		paramColumn.setHeaderValue("Parameter");
 		Component comp = headerRenderer.getTableCellRendererComponent(
-							 null, paramColumn.getHeaderValue(),
-							 false, false, 0, 0);
+			null, paramColumn.getHeaderValue(),
+			false, false, 0, 0
+		);
 		int width = comp.getPreferredSize().width;
-		paramColumn.setPreferredWidth((int)(width*1.6));
+		paramColumn.setPreferredWidth((int) (width * 1.6));
 
 		TableColumn valueColumn = table.getColumnModel().getColumn(1);
 		valueColumn.setHeaderValue("Value");
-		valueColumn.setPreferredWidth((int)(width/1.6));
+		valueColumn.setPreferredWidth((int) (width / 1.6));
 
 		valueColumn.setCellEditor(new CellEditor(/*this*/));
 		//valueColumn.setCellRenderer(new CellRenderer());
@@ -434,7 +462,7 @@ public final class ParamValueTable extends JPanel {
 		//		JScrollPane scrollPane = new JScrollPane(table);
 		//		scrollPane.setBackground(bgClr);
 		//		add(scrollPane,BorderLayout.CENTER);
-		add(table,BorderLayout.NORTH);
+		add(table, BorderLayout.NORTH);
 
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -443,10 +471,12 @@ public final class ParamValueTable extends JPanel {
 		rowSM.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				//Ignore extra messages.
-				if (e.getValueIsAdjusting()) return;
+				if (e.getValueIsAdjusting()) {
+					return;
+				}
 
 				ListSelectionModel lsm =
-					(ListSelectionModel)e.getSource();
+					(ListSelectionModel) e.getSource();
 				if (lsm.isSelectionEmpty()) {
 					// no rows are selected
 					helpInfo.setText("");
@@ -454,32 +484,31 @@ public final class ParamValueTable extends JPanel {
 				} else {
 					int selectedRow = lsm.getMinSelectionIndex();
 					//selectedRow is selected
-					AbstractParam param=(AbstractParam)tableModel.getValueAt(selectedRow,1);
+					AbstractParam param = (AbstractParam) tableModel.getValueAt(selectedRow, 1);
 					helpInfo.setText("<html><a href=\"longDesc\">"
-							+param.getNiceName()+"</a>: "
-							+param.getShortDesc()
-							+"</html>");
-					helpInfo.setLongText("<html>"+param.getLongDesc()+"</html>");
+									 + param.getNiceName() + "</a>: "
+									 + param.getShortDesc()
+									 + "</html>");
+					helpInfo.setLongText("<html>" + param.getLongDesc() + "</html>");
 				}
 			}
 		});
-
 
 		// add label for parameter info
 		helpInfo = new HelpInfo();
 		helpInfo.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				((HelpInfo)e.getSource()).showLongText();
+				((HelpInfo) e.getSource()).showLongText();
 			}
 		});
 
-		add(helpInfo,BorderLayout.CENTER);
-
+		add(helpInfo, BorderLayout.CENTER);
 	}
 
 	public void showGroup(String group, int level) {
-		if (table.isEditing())
+		if (table.isEditing()) {
 			table.getCellEditor().stopCellEditing();
+		}
 
 		groupName = group;
 		groupLevel = level;
@@ -490,8 +519,9 @@ public final class ParamValueTable extends JPanel {
 	}
 
 	public void stopEditing() {
-		if (table.isEditing())
+		if (table.isEditing()) {
 			table.getCellEditor().stopCellEditing();
+		}
 	}
 
 	public void showError(Exception e) {
@@ -523,59 +553,62 @@ public final class ParamValueTable extends JPanel {
 	}
 
 	protected void fireStateChanged() {
-		Object [] listeners = listenerList.getListenerList();
-		for (int i = listeners.length -2; i>=0; i-=2) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = listeners.length - 2; i >= 0; i -= 2) {
 			if (listeners[i] == ChangeListener.class) {
 				if (changeEvent == null) {
 					changeEvent = new ChangeEvent(this);
 				}
-				((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+				((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
 			}
 		}
 	}
 
 
 	class HelpInfo extends JLabel {
+
 		private static final long serialVersionUID = 1L;
 
 		String longText;
-		boolean errorShowing=false;
+		boolean errorShowing = false;
 
-		public HelpInfo () {
+		public HelpInfo() {
 			super();
-			setFont(getFont().deriveFont(Font.PLAIN,12));
-			setBorder(BorderFactory.createEmptyBorder(10,5,5,5));
+			setFont(getFont().deriveFont(Font.PLAIN, 12));
+			setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 		}
 
 		public void setLongText(String text) {
-			if(! errorShowing) longText = text;
+			if (!errorShowing) {
+				longText = text;
+			}
 		}
 
 		public void showLongText() {
-			if (! errorShowing) {
-				JLabel msg = new JLabel(longText.replace('\n',' '));
+			if (!errorShowing) {
+				JLabel msg = new JLabel(longText.replace('\n', ' '));
 				//    		Dimension dim = msg.getMaximumSize();
 				//    		dim.setSize(100,dim.getHeight());
 				//    		msg.setMaximumSize(dim);
-				JOptionPane.showMessageDialog(this,msg,
-						"Parameter description",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, msg,
+					"Parameter description", JOptionPane.INFORMATION_MESSAGE
+				);
 			}
 		}
 
 		public void showError(String err) {
-			setText("<html><font color='red'>"+err+"</font></html>");
-			errorShowing=true;
+			setText("<html><font color='red'>" + err + "</font></html>");
+			errorShowing = true;
 		}
 
 		public void noError() {
-			errorShowing=false;
+			errorShowing = false;
 		}
 
 		public void setText(String str) {
-			if (! errorShowing) super.setText(str);
+			if (!errorShowing) {
+				super.setText(str);
+			}
 		}
 	}
-
-
-
 }

@@ -22,27 +22,31 @@
 
 package net.katsstuff.arbaro.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Box;
-import javax.swing.border.TitledBorder;
-import javax.swing.Icon;
-import javax.swing.JToolBar;
-import javax.swing.JButton;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JSplitPane;
-import javax.swing.JSlider;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -50,22 +54,27 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JScrollPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import net.katsstuff.arbaro.params.*;
-import net.katsstuff.arbaro.export.ExporterFactory;
 import net.katsstuff.arbaro.export.Console;
+import net.katsstuff.arbaro.export.ExporterFactory;
+import net.katsstuff.arbaro.params.AbstractParam;
+import net.katsstuff.arbaro.params.ParamException;
+import net.katsstuff.arbaro.params.Params;
 
 /**
  * The main window of Arbaro GUI
  *
  * @author wdiestel
  */
- public final class Workplace {
+public final class Workplace {
 	/*
 	 * TODO:
 	 *  - toolbar buttons for level changes of preview, toggling of leaf showing
@@ -88,7 +97,7 @@ import net.katsstuff.arbaro.export.Console;
 
 	//Tree tree;
 	Params params;
-//	ExporterFactory exporterFactory;
+	//	ExporterFactory exporterFactory;
 	int seed = 13;
 
 	PreviewTree previewTree;
@@ -100,51 +109,55 @@ import net.katsstuff.arbaro.export.Console;
 	JToolBar toolBar;
 
 	JFileChooser fileChooser;
-    File treefile = null;
+	File treefile = null;
 	boolean modified;
 
-	static final Color bgClr = new Color(242,242,229);
-	static final Color Silver = new Color(142,142,129);
+	static final Color bgClr = new Color(242, 242, 229);
+	static final Color Silver = new Color(142, 142, 129);
 
 	ParamValueTable valueEditor;
 	ParamGroupsView groupsView;
 
-    // images
-    final static ImageIcon shapeIcon = createImageIcon("images/shape.png","Tree shape");
-    final static ImageIcon radiusIcon = createImageIcon("images/radius.png","Trunk radius");
-    final static ImageIcon leavesIcon = createImageIcon("images/leaves.png","Leaves");
-    final static ImageIcon pruneIcon = createImageIcon("images/pruning.png","Pruning/Envelope");
-    final static ImageIcon miscIcon = createImageIcon("images/misc.png","Miscellaneous parameters");
-    final static ImageIcon lentapIcon = createImageIcon("images/len_tapr.png","Length and taper");
-    final static ImageIcon curveIcon = createImageIcon("images/curve.png","Curvature");
-    final static ImageIcon splitIcon = createImageIcon("images/splitting.png","Splitting");
-    final static ImageIcon substemIcon = createImageIcon("images/substem.png","Branching");
-	final static ImageIcon aboutIcon = createImageIcon("images/arbaro64.png","Arbaro");
+	// images
+	final static ImageIcon shapeIcon = createImageIcon("images/shape.png", "Tree shape");
+	final static ImageIcon radiusIcon = createImageIcon("images/radius.png", "Trunk radius");
+	final static ImageIcon leavesIcon = createImageIcon("images/leaves.png", "Leaves");
+	final static ImageIcon pruneIcon = createImageIcon("images/pruning.png", "Pruning/Envelope");
+	final static ImageIcon miscIcon = createImageIcon("images/misc.png", "Miscellaneous parameters");
+	final static ImageIcon lentapIcon = createImageIcon("images/len_tapr.png", "Length and taper");
+	final static ImageIcon curveIcon = createImageIcon("images/curve.png", "Curvature");
+	final static ImageIcon splitIcon = createImageIcon("images/splitting.png", "Splitting");
+	final static ImageIcon substemIcon = createImageIcon("images/substem.png", "Branching");
+	final static ImageIcon aboutIcon = createImageIcon("images/arbaro64.png", "Arbaro");
 
-    /**
-     * Returns an ImageIcon, or null if the path was invalid.
-     *
-     * @param path
-     * @param description
-     * @return ImageIcon, or null if the path was invalid
-     */
-    protected static ImageIcon createImageIcon(String path,
-    		String description) {
-    	java.net.URL imgURL = Workplace.class.getResource(path);
-    	if (imgURL != null) {
-    		return new ImageIcon(imgURL, description);
-    	} else {
-    		System.err.println("Couldn't find file: " + path);
-    		return null;
-    	}
-    }
+	/**
+	 * Returns an ImageIcon, or null if the path was invalid.
+	 *
+	 * @return ImageIcon, or null if the path was invalid
+	 */
+	protected static ImageIcon createImageIcon(
+		String path,
+		String description
+	) {
+		java.net.URL imgURL = Workplace.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL, description);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
+	}
 
 
-	public Workplace () {
+	public Workplace() {
 
 		// create tree with paramDB
 		params = new Params();
-		try { params.prepare(13); } catch (Exception e) {};
+		try {
+			params.prepare(13);
+		} catch (Exception e) {
+		}
+		;
 
 		// create frame
 		frame = new JFrame("Arbaro");
@@ -155,7 +168,9 @@ import net.katsstuff.arbaro.export.Console;
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				if (! shouldSave()) return;
+				if (!shouldSave()) {
+					return;
+				}
 				System.exit(0);
 			}
 		});
@@ -168,29 +183,32 @@ import net.katsstuff.arbaro.export.Console;
 
 		// create file chooser for open/save dialogs
 		fileChooser = new JFileChooser();
-		fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")+"/trees"));
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir") + "/trees"));
 
 		// read config
 		config = new Config();
 		applyConfig();
 
 		// create GUI
-		AbstractParam.loading=true;
+		AbstractParam.loading = true;
 		createGUI();
 		groupsView.fireStateChanged();
 		frame.setVisible(true);
 		setModified(false);
-		AbstractParam.loading=false;
+		AbstractParam.loading = false;
 	}
 
 	public void applyConfig() {
 		// TODO instead of exporterFactory a classes exportOptions and
 		// renderOptions should be used here
-		seed = Integer.parseInt(config.getProperty("tree.seed",""+seed));
-		ExporterFactory.setExportFormat(Integer.parseInt(config.getProperty("export.format",""+ExporterFactory.getExportFormat())));
-		ExporterFactory.setRenderW(Integer.parseInt(config.getProperty("povray.width",""+ExporterFactory.getRenderW())));
-		ExporterFactory.setRenderH(Integer.parseInt(config.getProperty("povray.height",""+ExporterFactory.getRenderH())));
-		ExporterFactory.setOutputPath(config.getProperty("export.path",ExporterFactory.getOutputPath()));
+		seed = Integer.parseInt(config.getProperty("tree.seed", "" + seed));
+		ExporterFactory.setExportFormat(Integer.parseInt(config.getProperty("export.format",
+			"" + ExporterFactory.getExportFormat())));
+		ExporterFactory.setRenderW(Integer.parseInt(config.getProperty("povray.width",
+			"" + ExporterFactory.getRenderW())));
+		ExporterFactory.setRenderH(Integer.parseInt(config.getProperty("povray.height",
+			"" + ExporterFactory.getRenderH())));
+		ExporterFactory.setOutputPath(config.getProperty("export.path", ExporterFactory.getOutputPath()));
 	}
 
 	void createGUI() {
@@ -207,7 +225,7 @@ import net.katsstuff.arbaro.export.Console;
 		//JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		//leftPane.setResizeWeight(0.2);
 		JPanel leftPane = new JPanel();
-		leftPane.setLayout(new BoxLayout(leftPane,BoxLayout.PAGE_AXIS));
+		leftPane.setLayout(new BoxLayout(leftPane, BoxLayout.PAGE_AXIS));
 
 		// parameter groups tree view
 		groupsView = new ParamGroupsView();
@@ -228,8 +246,7 @@ import net.katsstuff.arbaro.export.Console;
 
 					// FIXME: only necessary, when species
 					// param changed
-					frame.setTitle("Arbaro ["+params.Species+"]");
-
+					frame.setTitle("Arbaro [" + params.Species + "]");
 				} catch (ParamException err) {
 					Console.errorOutput(err.toString());
 					valueEditor.showError(err);
@@ -246,14 +263,15 @@ import net.katsstuff.arbaro.export.Console;
 					String group = groupsView.getGroupName();
 
 					// show parameters in value editor
-					valueEditor.showGroup(group,level);
+					valueEditor.showGroup(group, level);
 
 					// change preview trees level
-					if (level==AbstractParam.GENERAL) {
-						if (group.equals("LEAVES") || group.equals("LEAVESADD"))
+					if (level == AbstractParam.GENERAL) {
+						if (group.equals("LEAVES") || group.equals("LEAVESADD")) {
 							previewTree.setShowLevel(params.Levels);
-						else
+						} else {
 							previewTree.setShowLevel(1);
+						}
 					} else {
 						previewTree.setShowLevel(level);
 					}
@@ -261,21 +279,30 @@ import net.katsstuff.arbaro.export.Console;
 					// change explaining image
 					ImageIcon icon;
 					icon = shapeIcon;
-					if (group.equals("SHAPE")) icon = shapeIcon;
-					else if (group.equals("TRUNK")) icon=radiusIcon;
-			    	else if (group.equals("LEAVES") || group.equals("LEAVESADD")) icon=leavesIcon;
-			    	else if (group.equals("PRUNING")) icon=pruneIcon;
-			    	else if (group.equals("MISC")) icon=miscIcon;
-					else if (group.equals("LENTAPER")) icon=lentapIcon;
-			    	else if (group.equals("CURVATURE")) icon=curveIcon;
-		    		else if (group.equals("SPLITTING")) icon=splitIcon;
-		    		else if (group.equals("BRANCHING")) icon=substemIcon;
+					if (group.equals("SHAPE")) {
+						icon = shapeIcon;
+					} else if (group.equals("TRUNK")) {
+						icon = radiusIcon;
+					} else if (group.equals("LEAVES") || group.equals("LEAVESADD")) {
+						icon = leavesIcon;
+					} else if (group.equals("PRUNING")) {
+						icon = pruneIcon;
+					} else if (group.equals("MISC")) {
+						icon = miscIcon;
+					} else if (group.equals("LENTAPER")) {
+						icon = lentapIcon;
+					} else if (group.equals("CURVATURE")) {
+						icon = curveIcon;
+					} else if (group.equals("SPLITTING")) {
+						icon = splitIcon;
+					} else if (group.equals("BRANCHING")) {
+						icon = substemIcon;
+					}
 
 					imageLabel.setIcon(icon);
-					((TitledBorder)imageLabel.getBorder()).setTitle(icon.getDescription());
+					((TitledBorder) imageLabel.getBorder()).setTitle(icon.getDescription());
 
 					previewTree.remake(true);
-
 				} catch (Exception err) {
 					Console.printException(err);
 				}
@@ -286,7 +313,7 @@ import net.katsstuff.arbaro.export.Console;
 		//leftPanel.setMinimumSize(new Dimension(100,100));
 		//leftPane.setBackground(Color.RED);
 
-		mainPane.add(leftPane,JSplitPane.LEFT);
+		mainPane.add(leftPane, JSplitPane.LEFT);
 
 		/////////////////// right pane with previews
 		JPanel rightPane = new JPanel();
@@ -298,24 +325,24 @@ import net.katsstuff.arbaro.export.Console;
 		GridBagConstraints constraints = new GridBagConstraints();
 		rightPane.setLayout(grid);
 
-		constraints.insets = new Insets(1,1,0,0);
+		constraints.insets = new Insets(1, 1, 0, 0);
 
 		// big front view
 		JPanel frontViewWS = createFrontView();
-		constraints.weightx=1.0;
-		constraints.weighty=1.0;
+		constraints.weightx = 1.0;
+		constraints.weighty = 1.0;
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		constraints.gridwidth = 2;
 		constraints.gridheight = 2;
-		grid.setConstraints(frontViewWS,constraints);
+		grid.setConstraints(frontViewWS, constraints);
 		rightPane.add(frontViewWS);
 
-		constraints.weightx=0.2;
+		constraints.weightx = 0.2;
 
 		// small top view
-		topView = new TreePreview(previewTree,TreePreview.PERSPECTIVE_TOP,config);
+		topView = new TreePreview(previewTree, TreePreview.PERSPECTIVE_TOP, config);
 		topView.setOpaque(true);
 		topView.setBackground(bgClr);
 
@@ -324,14 +351,15 @@ import net.katsstuff.arbaro.export.Console;
 		constraints.gridwidth = 1;
 		constraints.gridheight = 1;
 		// constraints.anchor = GridBagConstraints.WEST;
-		grid.setConstraints(topView,constraints);
+		grid.setConstraints(topView, constraints);
 		rightPane.add(topView);
 
 		// other view with explaining images
 		imageLabel = new JLabel("", shapeIcon, JLabel.CENTER);
 		imageLabel.setBorder(BorderFactory.createTitledBorder(
-    			BorderFactory.createEmptyBorder(2,2,2,2),"Tree shape",
-				TitledBorder.CENTER,TitledBorder.BOTTOM));
+			BorderFactory.createEmptyBorder(2, 2, 2, 2), "Tree shape",
+			TitledBorder.CENTER, TitledBorder.BOTTOM
+		));
 
 //		imageLabel.setBorder(BorderFactory.createTitledBorder(
 //    			BorderFactory.createLineBorder(Color.RED),"Tree shape",
@@ -340,23 +368,23 @@ import net.katsstuff.arbaro.export.Console;
 		imageLabel.setOpaque(true);
 		imageLabel.setBackground(bgClr);
 
-		constraints.weighty=0.2;
+		constraints.weighty = 0.2;
 		constraints.gridx = 2;
 		constraints.gridy = 1;
 		// constraints.anchor = GridBagConstraints.WEST;
 		//JLabel placeholder = new JLabel("placeholder");
-		grid.setConstraints(imageLabel,constraints);
+		grid.setConstraints(imageLabel, constraints);
 		rightPane.add(imageLabel);
 
-		mainPane.add(rightPane,JSplitPane.RIGHT);
+		mainPane.add(rightPane, JSplitPane.RIGHT);
 
 		// setup main content pane
-		mainPane.setPreferredSize(new Dimension(800,600));
+		mainPane.setPreferredSize(new Dimension(800, 600));
 		Container contentPane = frame.getContentPane();
-		contentPane.add(mainPane,BorderLayout.CENTER);
+		contentPane.add(mainPane, BorderLayout.CENTER);
 
 		// add toolbar
-		contentPane.add(toolBar,BorderLayout.PAGE_START);
+		contentPane.add(toolBar, BorderLayout.PAGE_START);
 
 		// add status line
 //		statusbar = new Statusbar();
@@ -371,24 +399,25 @@ import net.katsstuff.arbaro.export.Console;
 	private JPanel createFrontView() {
 		JPanel frontViewWithSlider = new JPanel();
 		frontViewWithSlider.setLayout(new BorderLayout());
-		frontView = new TreePreview(previewTree,TreePreview.PERSPECTIVE_FRONT,config);
+		frontView = new TreePreview(previewTree, TreePreview.PERSPECTIVE_FRONT, config);
 		frontView.setOpaque(true);
 		frontView.setBackground(Color.WHITE);
-		frontViewWithSlider.add(frontView,BorderLayout.CENTER);
+		frontViewWithSlider.add(frontView, BorderLayout.CENTER);
 
-		rotator = new JSlider(-180,180);
+		rotator = new JSlider(-180, 180);
 		rotator.setPaintLabels(true);
 		rotator.setPaintTicks(true);
 		rotator.setPaintTrack(true);
 		rotator.setMinorTickSpacing(10);
 		rotator.setMajorTickSpacing(90);
-		rotator.setBackground(new Color(250,250,245));
-		rotator.setBorder(BorderFactory.createMatteBorder(0,0,0,1,
-				frontViewWithSlider.getBackground()));
+		rotator.setBackground(new Color(250, 250, 245));
+		rotator.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1,
+			frontViewWithSlider.getBackground()
+		));
 
 		rotator.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider)e.getSource();
+				JSlider source = (JSlider) e.getSource();
 				// fast draw while adjusting rotation slider
 				frontView.setDraft(source.getValueIsAdjusting());
 				topView.setDraft(source.getValueIsAdjusting());
@@ -397,11 +426,11 @@ import net.katsstuff.arbaro.export.Console;
 				topView.setRotation(rotator.getValue());
 			}
 		});
-		frontViewWithSlider.add(rotator,BorderLayout.SOUTH);
+		frontViewWithSlider.add(rotator, BorderLayout.SOUTH);
 		return frontViewWithSlider;
 	}
 
-	FileNewAction fileNewAction =  new FileNewAction();
+	FileNewAction fileNewAction = new FileNewAction();
 	FileOpenAction fileOpenAction = new FileOpenAction();
 	FileSaveAction fileSaveAction = new FileSaveAction();
 	ExportTreeAction exportTreeAction = new ExportTreeAction();
@@ -415,7 +444,7 @@ import net.katsstuff.arbaro.export.Console;
 		addToolBarButton(fileOpenAction);
 		addToolBarButton(fileSaveAction);
 
-		toolBar.add(Box.createRigidArea(new Dimension(10,10)));
+		toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
 		addToolBarButton(exportTreeAction);
 		addToolBarButton(renderTreeAction);
@@ -435,7 +464,7 @@ import net.katsstuff.arbaro.export.Console;
 
 		JButton button = new JButton(action);
 		button.setText("");
-	    toolBar.add(button);
+		toolBar.add(button);
 	}
 
 	void createMenuBar() {
@@ -445,7 +474,7 @@ import net.katsstuff.arbaro.export.Console;
 
 		/**** file menu ***/
 
-		menubar=new JMenuBar();
+		menubar = new JMenuBar();
 		menu = new JMenu("File");
 		menu.setMnemonic('F');
 
@@ -493,7 +522,6 @@ import net.katsstuff.arbaro.export.Console;
 
 		menubar.add(menu);
 
-
 		/**** help menu ****/
 		menu = new JMenu("Help");
 		menu.setMnemonic('H');
@@ -519,27 +547,31 @@ import net.katsstuff.arbaro.export.Console;
 	}
 
 	class FileNewAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public FileNewAction() {
-			super("New",createImageIcon("images/actions/New24.png","New"));
-        	putValue(SHORT_DESCRIPTION, "New file");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
+			super("New", createImageIcon("images/actions/New24.png", "New"));
+			putValue(SHORT_DESCRIPTION, "New file");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			valueEditor.stopEditing();
 
 			// ask if should save when modified...
-			if (! shouldSave()) return;
-			AbstractParam.loading=true;
+			if (!shouldSave()) {
+				return;
+			}
+			AbstractParam.loading = true;
 			params.clearParams();
 			//tree.params.Species="default";
 			setModified(false);
-			AbstractParam.loading=false;
+			AbstractParam.loading = false;
 
 			groupsView.fireStateChanged();
 			params.prepare(13);
-			frame.setTitle("Arbaro ["+params.Species+"]");
+			frame.setTitle("Arbaro [" + params.Species + "]");
 
 			// draw new tree
 			try {
@@ -547,73 +579,81 @@ import net.katsstuff.arbaro.export.Console;
 				previewTree.remake(true);
 			} catch (ParamException err) {
 				setModified(false);
-				JOptionPane.showMessageDialog(frame,err.getMessage(),
-						"Parameter Error",
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(frame, err.getMessage(),
+					"Parameter Error",
+					JOptionPane.ERROR_MESSAGE
+				);
 			} catch (Exception err) {
 				System.err.println(err);
 				err.printStackTrace();
 			}
 		}
-	};
+	}
+
+	;
 
 	class FileOpenAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public FileOpenAction() {
-			super("Open...",createImageIcon("images/actions/Open24.png","Open"));
-        	putValue(SHORT_DESCRIPTION, "Open file");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
+			super("Open...", createImageIcon("images/actions/Open24.png", "Open"));
+			putValue(SHORT_DESCRIPTION, "Open file");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			valueEditor.stopEditing();
 
 			// ask if should saved
-			if (! shouldSave()) return;
+			if (!shouldSave()) {
+				return;
+			}
 
 			int returnVal = fileChooser.showOpenDialog(frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				System.err.println("opening file: " +
-						fileChooser.getSelectedFile().getName());
+								   fileChooser.getSelectedFile().getName());
 				try {
-					AbstractParam.loading=true;
+					AbstractParam.loading = true;
 					params.clearParams();
 					treefile = fileChooser.getSelectedFile();
 					// read parameters
 					params.readFromXML(new FileInputStream(treefile));
-					AbstractParam.loading=false;
+					AbstractParam.loading = false;
 					setModified(false);
 
 					groupsView.fireStateChanged();
 					params.prepare(13);
-					frame.setTitle("Arbaro ["+params.Species+"]");
+					frame.setTitle("Arbaro [" + params.Species + "]");
 
 					// draw opened tree
 					previewTree.setParams(params);
 					previewTree.remake(true);
-
 				} catch (ParamException err) {
 					setModified(false);
-					ShowException.msgBox(frame,"Parameter Error",err);
+					ShowException.msgBox(frame, "Parameter Error", err);
 				} catch (FileNotFoundException err) {
-					ShowException.msgBox(frame,"File not found",err);
+					ShowException.msgBox(frame, "File not found", err);
 				} catch (Exception err) {
 					Console.printException(err);
-					ShowException.msgBox(frame,"Error opening file",err);
+					ShowException.msgBox(frame, "Error opening file", err);
 				}
-
 			}
 		}
-	};
+	}
+
+	;
 
 	boolean shouldSave() {
 		if (modified) {
-			int result = JOptionPane.showConfirmDialog(frame,
-					"Some parameters are modified. Should the tree definition be saved?",
-					"Tree definition modified",
-					JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
+			int result = JOptionPane.showConfirmDialog(
+				frame,
+				"Some parameters are modified. Should the tree definition be saved?",
+				"Tree definition modified",
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
 			if (result == JOptionPane.YES_OPTION) {
 				if (treefile != null) {
 					return fileSave();
@@ -622,14 +662,15 @@ import net.katsstuff.arbaro.export.Console;
 				}
 			}
 			return (result != JOptionPane.CANCEL_OPTION);
-		} else
+		} else {
 			return true; // not modified, can proceed
+		}
 	}
 
 
 	boolean fileSaveAs() {
 		int returnVal = fileChooser.showSaveDialog(frame);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			treefile = fileChooser.getSelectedFile();
 			return fileSave();
 		}
@@ -638,36 +679,39 @@ import net.katsstuff.arbaro.export.Console;
 
 	boolean fileSave() {
 		System.err.println("saving to file: " +
-				fileChooser.getSelectedFile().getName());
+						   fileChooser.getSelectedFile().getName());
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter(treefile));
 			params.toXML(out);
 			setModified(false);
 			return true;
 		} catch (ParamException err) {
-			JOptionPane.showMessageDialog(frame,err.getMessage(),
-					"Parameter Error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, err.getMessage(),
+				"Parameter Error",
+				JOptionPane.ERROR_MESSAGE
+			);
 		} catch (FileNotFoundException err) {
-			JOptionPane.showMessageDialog(frame,err.getMessage(),
-					"File not found",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		catch (IOException err) {
-			JOptionPane.showMessageDialog(frame,err.getMessage(),
-					"Output error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, err.getMessage(),
+				"File not found",
+				JOptionPane.ERROR_MESSAGE
+			);
+		} catch (IOException err) {
+			JOptionPane.showMessageDialog(frame, err.getMessage(),
+				"Output error",
+				JOptionPane.ERROR_MESSAGE
+			);
 		}
 		return false;
 	}
 
 	class FileSaveAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public FileSaveAction() {
-			super("Save",createImageIcon("images/actions/Save24.png","Save"));
-        	putValue(SHORT_DESCRIPTION, "Save file");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+			super("Save", createImageIcon("images/actions/Save24.png", "Save"));
+			putValue(SHORT_DESCRIPTION, "Save file");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -679,15 +723,18 @@ import net.katsstuff.arbaro.export.Console;
 				fileSaveAs();
 			}
 		}
-	};
+	}
+
+	;
 
 	class FileSaveAsAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public FileSaveAsAction() {
-			super("Save as...",createImageIcon("images/actions/SaveAs24.png","SaveAs"));
-        	putValue(SHORT_DESCRIPTION, "Save file as");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
+			super("Save as...", createImageIcon("images/actions/SaveAs24.png", "SaveAs"));
+			putValue(SHORT_DESCRIPTION, "Save file as");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -698,65 +745,72 @@ import net.katsstuff.arbaro.export.Console;
 	}
 
 	class ExportTreeAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public ExportTreeAction() {
-			super("Export tree...",createImageIcon("images/actions/Create24.png","Export"));
-        	putValue(SHORT_DESCRIPTION, "Create and export tree");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+			super("Export tree...", createImageIcon("images/actions/Create24.png", "Export"));
+			putValue(SHORT_DESCRIPTION, "Create and export tree");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			valueEditor.stopEditing();
-			new ExportDialog(frame,seed,/*ExporterFactory,*/params,config,false);
+			new ExportDialog(frame, seed,/*ExporterFactory,*/params, config, false);
 		}
 	}
 
 	class RenderTreeAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public RenderTreeAction() {
-			super("Render tree...",createImageIcon("images/actions/Render24.png","Render"));
-        	putValue(SHORT_DESCRIPTION, "Create, export and render tree");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
+			super("Render tree...", createImageIcon("images/actions/Render24.png", "Render"));
+			putValue(SHORT_DESCRIPTION, "Create, export and render tree");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			valueEditor.stopEditing();
-			new ExportDialog(frame,seed,/*exporterFactory,*/params,config,true);
+			new ExportDialog(frame, seed,/*exporterFactory,*/params, config, true);
 		}
 	}
 
 
 	class SetupArbaroAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public SetupArbaroAction() {
-			super("Setup...",createImageIcon("images/actions/Preferences24.png","Setup"));
-        	putValue(SHORT_DESCRIPTION, "Setup Arbaro");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+			super("Setup...", createImageIcon("images/actions/Preferences24.png", "Setup"));
+			putValue(SHORT_DESCRIPTION, "Setup Arbaro");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			new CfgDialog(Workplace.this,frame,config);
+			new CfgDialog(Workplace.this, frame, config);
 		}
 	}
 
 	class QuitAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public QuitAction() {
-			super("Quit",null);
-        	putValue(SHORT_DESCRIPTION, "Quit Arbaro");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));
+			super("Quit", null);
+			putValue(SHORT_DESCRIPTION, "Quit Arbaro");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			valueEditor.stopEditing();
 
 			// ask if values should be saved
-			if (! shouldSave()) return;
+			if (!shouldSave()) {
+				return;
+			}
 			frame.dispose();
 		}
-
 	}
 
 //	class HelpParameterListener implements ActionListener {
@@ -773,17 +827,19 @@ import net.katsstuff.arbaro.export.Console;
 //	}
 
 	class HelpAboutAction extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 
 		public HelpAboutAction() {
-			super("About Arbaro...",createImageIcon("images/actions/About24.png","About"));
-        	putValue(SHORT_DESCRIPTION, "About Arbaro");
-        	putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
+			super("About Arbaro...", createImageIcon("images/actions/About24.png", "About"));
+			putValue(SHORT_DESCRIPTION, "About Arbaro");
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			JOptionPane.showMessageDialog(frame, net.katsstuff.arbaro.arbaro.programName,
-					"About Arbaro",JOptionPane.INFORMATION_MESSAGE,aboutIcon);
+				"About Arbaro", JOptionPane.INFORMATION_MESSAGE, aboutIcon
+			);
 		}
 	}
 }

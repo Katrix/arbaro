@@ -25,14 +25,14 @@ package net.katsstuff.arbaro.export;
 
 /**
  * Helps with hierachically indenting text strings
- *
  */
 class StringIndenter {
+
 	String indent;
-	int indentLevel=0;
+	int indentLevel = 0;
 
 	public StringIndenter(String indent) {
-		this.indent=indent;
+		this.indent = indent;
 	}
 
 	public void increase() {
@@ -47,7 +47,7 @@ class StringIndenter {
 
 	public String getIndent() {
 		StringBuffer fullIndent = new StringBuffer();
-		for (int i=0; i < indentLevel; i++) {
+		for (int i = 0; i < indentLevel; i++) {
 			fullIndent.append(indent);
 		}
 

@@ -24,13 +24,13 @@ package net.katsstuff.arbaro.mesh;
 
 /**
  * @author Wolfram Diestel
- *
  */
 
 public class MeshException extends RuntimeException {
+
 	private static final long serialVersionUID = 1L;
 
-    public MeshException(String msg) {
-	super(msg);
-    }
+	public MeshException(String msg) {
+		super(msg);
+	}
 };

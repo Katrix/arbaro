@@ -1,9 +1,10 @@
 package net.katsstuff.arbaro.export;
 
 public class InvalidExportFormatError extends Exception {
+
 	private static final long serialVersionUID = 1L;
-	
-    public InvalidExportFormatError(String msg) {
-	super(msg);
-    }
+
+	public InvalidExportFormatError(String msg) {
+		super(msg);
+	}
 };

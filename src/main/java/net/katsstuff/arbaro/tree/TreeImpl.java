@@ -23,17 +23,18 @@
 package net.katsstuff.arbaro.tree;
 
 import java.io.PrintWriter;
-import java.lang.Math;
 import java.util.Enumeration;
-
-import net.katsstuff.arbaro.params.*;
-import net.katsstuff.arbaro.transformation.*;
-import net.katsstuff.arbaro.export.*;
+import net.katsstuff.arbaro.export.Console;
+import net.katsstuff.arbaro.export.Progress;
+import net.katsstuff.arbaro.params.IntParam;
+import net.katsstuff.arbaro.params.LevelParams;
+import net.katsstuff.arbaro.params.Params;
+import net.katsstuff.arbaro.transformation.Transformation;
+import net.katsstuff.arbaro.transformation.Vector;
 
 /**
- * A class for creation of threedimensional tree objects.
- * A tree has one or more trunks, with several levels of
- * branches all of which are instances of the Stem class.
+ * A class for creation of threedimensional tree objects. A tree has one or more trunks, with several levels of branches
+ * all of which are instances of the Stem class.
  * <p>
  * See this class diagram for the parts of a Tree:
  * <p>
@@ -41,22 +42,36 @@ import net.katsstuff.arbaro.export.*;
  * <p>
  *
  * @author Wolfram Diestel
- *
  */
 class TreeImpl implements Tree {
+
 	public Params params;
 	int seed = 13;
-	public int getSeed() { return seed; }
+
+	public int getSeed() {
+		return seed;
+	}
 
 	Progress progress;
 
 	long stemCount;
 	long leafCount;
-	public long getStemCount() { return stemCount; }
-	public long getLeafCount() { return leafCount; }
 
-	public void setStemCount(long cnt) { stemCount=cnt; }
-	public void setLeafCount(long cnt) { leafCount=cnt; }
+	public long getStemCount() {
+		return stemCount;
+	}
+
+	public long getLeafCount() {
+		return leafCount;
+	}
+
+	public void setStemCount(long cnt) {
+		stemCount = cnt;
+	}
+
+	public void setLeafCount(long cnt) {
+		leafCount = cnt;
+	}
 
 	// the trunks (one for trees, many for bushes)
 	java.util.Vector trunks;
@@ -66,15 +81,26 @@ class TreeImpl implements Tree {
 
 	Vector maxPoint;
 	Vector minPoint;
-	public Vector getMaxPoint() { return maxPoint; }
-	public Vector getMinPoint() { return minPoint; }
-	public double getHeight() { return maxPoint.getZ(); }
+
+	public Vector getMaxPoint() {
+		return maxPoint;
+	}
+
+	public Vector getMinPoint() {
+		return minPoint;
+	}
+
+	public double getHeight() {
+		return maxPoint.getZ();
+	}
+
 	public double getWidth() {
 		return Math.sqrt(Math.max(
-				 minPoint.getX()*minPoint.getX()
-				+minPoint.getY()*minPoint.getY(),
-				 maxPoint.getX()*maxPoint.getX()
-				+maxPoint.getY()*maxPoint.getY()));
+			minPoint.getX() * minPoint.getX()
+			+ minPoint.getY() * minPoint.getY(),
+			maxPoint.getX() * maxPoint.getX()
+			+ maxPoint.getY() * maxPoint.getY()
+		));
 	}
 
 	/**
@@ -88,8 +114,7 @@ class TreeImpl implements Tree {
 	}
 
 	/**
-	 * Creates a new tree object copying the parameters
-	 * from an other tree
+	 * Creates a new tree object copying the parameters from an other tree
 	 *
 	 * @param other the other tree, from wich parameters are taken
 	 */
@@ -104,13 +129,10 @@ class TreeImpl implements Tree {
 	}
 
 	/**
-	 * Generates the tree. The following collaboration diagram
-	 * shows the recursion trough the make process:
+	 * Generates the tree. The following collaboration diagram shows the recursion trough the make process:
 	 * <p>
 	 * <img src="doc-files/Tree-2.png" />
 	 * <p>
-	 *
-	 * @throws Exception
 	 */
 
 	public void make(Progress progress) {
@@ -118,8 +140,8 @@ class TreeImpl implements Tree {
 
 		setupGenProgress();
 		params.prepare(seed);
-		maxPoint = new Vector(-Double.MAX_VALUE,-Double.MAX_VALUE,-Double.MAX_VALUE);
-		minPoint = new Vector(Double.MAX_VALUE,Double.MAX_VALUE,Double.MAX_VALUE);
+		maxPoint = new Vector(-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE);
+		minPoint = new Vector(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
 		Console.verboseOutput("Tree species: " + params.Species + ", Seed: " + seed);
 		Console.verboseOutput("making " + params.Species + "(" + seed + ") ");
@@ -130,22 +152,23 @@ class TreeImpl implements Tree {
 		double angle;
 		double dist;
 		LevelParams lpar = params.getLevelParams(0);
-		for (int i=0; i<lpar.nBranches; i++) {
-			trf = trunkDirection(transf,lpar);
+		for (int i = 0; i < lpar.nBranches; i++) {
+			trf = trunkDirection(transf, lpar);
 			angle = lpar.var(360);
 			dist = lpar.var(lpar.nBranchDist);
-			trf = trf.translate(new Vector(dist*Math.sin(angle),
-					dist*Math.cos(angle),0));
-			StemImpl trunk = new StemImpl(this,null,0,trf,0);
+			trf = trf.translate(new Vector(dist * Math.sin(angle),
+				dist * Math.cos(angle), 0
+			));
+			StemImpl trunk = new StemImpl(this, null, 0, trf, 0);
 			trunks.addElement(trunk);
-			trunk.index=0;
+			trunk.index = 0;
 			trunk.make();
 		}
 
-
 		// set leafCount and stemCount for the tree
-		if (params.Leaves==0) setLeafCount(0);
-		else {
+		if (params.Leaves == 0) {
+			setLeafCount(0);
+		} else {
 			LeafCounter leafCounter = new LeafCounter();
 			traverseTree(leafCounter);
 			setLeafCount(leafCounter.getLeafCount());
@@ -168,33 +191,37 @@ class TreeImpl implements Tree {
 
 		// get rotation angle
 		double rotangle;
-		if (lpar.nRotate>=0) { // rotating trunk
-			trunk_rotangle = (trunk_rotangle + lpar.nRotate+lpar.var(lpar.nRotateV)+360) % 360;
+		if (lpar.nRotate >= 0) { // rotating trunk
+			trunk_rotangle = (trunk_rotangle + lpar.nRotate + lpar.var(lpar.nRotateV) + 360) % 360;
 			rotangle = trunk_rotangle;
 		} else { // alternating trunks
-			if (Math.abs(trunk_rotangle) != 1) trunk_rotangle = 1;
+			if (Math.abs(trunk_rotangle) != 1) {
+				trunk_rotangle = 1;
+			}
 			trunk_rotangle = -trunk_rotangle;
-			rotangle = trunk_rotangle * (180+lpar.nRotate+lpar.var(lpar.nRotateV));
+			rotangle = trunk_rotangle * (180 + lpar.nRotate + lpar.var(lpar.nRotateV));
 		}
 
 		// get downangle
 		double downangle;
-		downangle = lpar.nDownAngle+lpar.var(lpar.nDownAngleV);
+		downangle = lpar.nDownAngle + lpar.var(lpar.nDownAngleV);
 
-		return trf.rotxz(downangle,rotangle);
+		return trf.rotxz(downangle, rotangle);
 	}
 
 
 	public boolean traverseTree(TreeTraversal traversal) {
-	    if (traversal.enterTree(this))  // enter this tree?
-        {
-             Enumeration stems = trunks.elements();
-             while (stems.hasMoreElements())
-                if (! ((Stem)stems.nextElement()).traverseTree(traversal))
-                        break;
-        }
+		if (traversal.enterTree(this))  // enter this tree?
+		{
+			Enumeration stems = trunks.elements();
+			while (stems.hasMoreElements()) {
+				if (!((Stem) stems.nextElement()).traverseTree(traversal)) {
+					break;
+				}
+			}
+		}
 
-        return traversal.leaveTree(this);
+		return traversal.leaveTree(this);
 	}
 
 	public void minMaxTest(Vector pt) {
@@ -216,7 +243,7 @@ class TreeImpl implements Tree {
 	 * @param out The output stream
 	 */
 
-	public void paramsToXML(PrintWriter out)  {
+	public void paramsToXML(PrintWriter out) {
 		params.toXML(out);
 	}
 
@@ -242,11 +269,11 @@ class TreeImpl implements Tree {
 	}
 
 	public double getLeafWidth() {
-		return params.LeafScale*params.LeafScaleX/Math.sqrt(params.LeafQuality);
+		return params.LeafScale * params.LeafScaleX / Math.sqrt(params.LeafQuality);
 	}
 
 	public double getLeafLength() {
-		return params.LeafScale/Math.sqrt(params.LeafQuality);
+		return params.LeafScale / Math.sqrt(params.LeafQuality);
 	}
 
 	public double getLeafStemLength() {
@@ -255,8 +282,8 @@ class TreeImpl implements Tree {
 
 	public String getVertexInfo(int level) {
 		return "vertices/section: "
-			+ params.getLevelParams(level).mesh_points + ", smooth: "
-			+ (params.smooth_mesh_level>=level? "yes" : "no");
+			   + params.getLevelParams(level).mesh_points + ", smooth: "
+			   + (params.smooth_mesh_level >= level ? "yes" : "no");
 	}
 
 
@@ -268,35 +295,34 @@ class TreeImpl implements Tree {
 		if (progress != null) {
 			// max progress = trunks * trunk segments * (first level branches + 1)
 			long maxGenProgress =
-				((IntParam)params.getParam("0Branches")).intValue()
-				* ((IntParam)params.getParam("0CurveRes")).intValue()
-				* (((IntParam)params.getParam("1Branches")).intValue()+1);
+				((IntParam) params.getParam("0Branches")).intValue()
+				* ((IntParam) params.getParam("0CurveRes")).intValue()
+				* (((IntParam) params.getParam("1Branches")).intValue() + 1);
 
-			progress.beginPhase("Creating tree structure",maxGenProgress);
+			progress.beginPhase("Creating tree structure", maxGenProgress);
 		}
 	}
 
 	/**
-	 * Sets (i.e. calcs) the progress for the process of making the tree
-	 * object.
+	 * Sets (i.e. calcs) the progress for the process of making the tree object.
 	 */
 	long genProgress;
 
 
-	 public synchronized void updateGenProgress() {
+	public synchronized void updateGenProgress() {
 		try {
 			// how much of 0Branches*0CurveRes*(1Branches+1) are created yet
 			long sum = 0;
-			for (int i=0; i<trunks.size(); i++) {
-				StemImpl trunk = ((StemImpl)trunks.elementAt(i));
+			for (int i = 0; i < trunks.size(); i++) {
+				StemImpl trunk = ((StemImpl) trunks.elementAt(i));
 				if (trunk.substems != null) {
-					sum += trunk.segments.size() * (trunk.substems.size()+1);
+					sum += trunk.segments.size() * (trunk.substems.size() + 1);
 				} else {
 					sum += trunk.segments.size();
 				}
 			}
 
-			if (sum-genProgress > progress.getMaxProgress()/100) {
+			if (sum - genProgress > progress.getMaxProgress() / 100) {
 				genProgress = sum;
 				progress.setProgress(genProgress);
 			}
@@ -304,8 +330,6 @@ class TreeImpl implements Tree {
 			System.err.println(e);
 		}
 	}
-
-
 };
 
 

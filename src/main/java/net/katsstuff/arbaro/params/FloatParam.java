@@ -23,81 +23,81 @@
 package net.katsstuff.arbaro.params;
 
 public class FloatParam extends AbstractParam {
-    private double min;
-    private double max;
-    private double deflt;
-    private double value;
 
-    FloatParam(String nam, double mn, double mx, double def, String grp, int lev,
-	       int ord, String sh, String lng) {
-	super(nam,grp,lev,ord,sh,lng);
-	min = mn;
-	max = mx;
-	deflt = def;
-	value = Double.NaN;
-    }
+	private double min;
+	private double max;
+	private double deflt;
+	private double value;
 
-    public String getDefaultValue() {
-	Double d = new Double(deflt);
-	return d.toString();
-    }
+	FloatParam(String nam, double mn, double mx, double def, String grp, int lev, int ord, String sh, String lng) {
+		super(nam, grp, lev, ord, sh, lng);
+		min = mn;
+		max = mx;
+		deflt = def;
+		value = Double.NaN;
+	}
 
-    public void clear() {
-	value = Double.NaN;
-	fireStateChanged();
-    }
+	public String getDefaultValue() {
+		Double d = new Double(deflt);
+		return d.toString();
+	}
 
-    public void setValue(String val) throws ParamException {
-    	double d;
-    	try {
-    		d = Double.parseDouble(val);
-    	} catch (NumberFormatException e) {
-    		throw new ParamException("Error setting value of "+name+". \""+val+"\" isn't a valid number.");
-    	}
-    	
-    	if (d<min) {
-    		throw new ParamException("Value of "+name+" should be greater then or equal to "+min);
-    	}
-    	if (d>max) {
-    		throw new ParamException("Value of "+name+" should be less then or equal to "+max);
-    	}
-    	value = d;
-    	fireStateChanged();
-    }
+	public void clear() {
+		value = Double.NaN;
+		fireStateChanged();
+	}
 
-    public String getValue() {
-	Double d = new Double(value);
-	return d.toString();
-    }
+	public void setValue(String val) throws ParamException {
+		double d;
+		try {
+			d = Double.parseDouble(val);
+		} catch (NumberFormatException e) {
+			throw new ParamException("Error setting value of " + name + ". \"" + val + "\" isn't a valid number.");
+		}
 
-    public boolean empty() {
-	return Double.isNaN(value);
-    }
+		if (d < min) {
+			throw new ParamException("Value of " + name + " should be greater then or equal to " + min);
+		}
+		if (d > max) {
+			throw new ParamException("Value of " + name + " should be less then or equal to " + max);
+		}
+		value = d;
+		fireStateChanged();
+	}
 
-    public double doubleValue() {
-    	if (empty()) {
-    		warn(name+" not given, using default value("+deflt+")");
-    		// set value to default, t.e. don't warn again
-    		value=deflt;
-    		fireStateChanged();
-    	}
-    	return value;
-    }
+	public String getValue() {
+		Double d = new Double(value);
+		return d.toString();
+	}
 
-    public String getLongDesc() {
-    	String desc = super.getLongDesc();
-    	desc += "<br><br>";
-    	if (! Double.isNaN(min)) {
-    		desc += "Minimum: "+min+"\n";
-    	}
-    	if (! Double.isNaN(max)) {
-    		desc += "Maximum: "+max+"\n";
-    	}
-    	if (! Double.isNaN(deflt)) {
-    		desc += "Default: "+deflt+"\n";
-    	}
-    	return desc;
-    }
+	public boolean empty() {
+		return Double.isNaN(value);
+	}
+
+	public double doubleValue() {
+		if (empty()) {
+			warn(name + " not given, using default value(" + deflt + ")");
+			// set value to default, t.e. don't warn again
+			value = deflt;
+			fireStateChanged();
+		}
+		return value;
+	}
+
+	public String getLongDesc() {
+		String desc = super.getLongDesc();
+		desc += "<br><br>";
+		if (!Double.isNaN(min)) {
+			desc += "Minimum: " + min + "\n";
+		}
+		if (!Double.isNaN(max)) {
+			desc += "Maximum: " + max + "\n";
+		}
+		if (!Double.isNaN(deflt)) {
+			desc += "Default: " + deflt + "\n";
+		}
+		return desc;
+	}
 };
 
 

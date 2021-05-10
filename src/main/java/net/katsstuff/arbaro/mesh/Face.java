@@ -23,26 +23,27 @@
 package net.katsstuff.arbaro.mesh;
 
 /**
- * A class holding three points forming a triangular face (of a mesh). 
- * 
+ * A class holding three points forming a triangular face (of a mesh).
+ *
  * @author Wolfram Diestel
  */
 
 public final class Face {
-    public long [] points;
 
-    public Face(long i, long j, long k) {
-    	points = new long[3];
-    	points[0]=i;
-    	points[1]=j;
-    	points[2]=k;
-    }
-    
-    public Face(long i, long j, long k, long m) {
+	public long[] points;
+
+	public Face(long i, long j, long k) {
+		points = new long[3];
+		points[0] = i;
+		points[1] = j;
+		points[2] = k;
+	}
+
+	public Face(long i, long j, long k, long m) {
 		points = new long[4];
-		points[0]=i;
-		points[1]=j;
-		points[2]=k;
-		points[3]=m;
-    }
+		points[0] = i;
+		points[1] = j;
+		points[2] = k;
+		points[3] = m;
+	}
 }

@@ -23,27 +23,28 @@
 package net.katsstuff.arbaro.gui;
 
 import java.awt.Component;
-
 import net.katsstuff.arbaro.mesh.MeshGenerator;
 import net.katsstuff.arbaro.mesh.ShieldedMeshGenerator;
 
 /**
  * @author wolfram
- *
  */
 public class ShieldedGUIMeshGenerator extends ShieldedMeshGenerator {
+
 	Component parent;
 
 	/**
-	 * @param meshGenerator
+	 *
 	 */
-	public ShieldedGUIMeshGenerator(Component parent,
-			MeshGenerator meshGenerator) {
+	public ShieldedGUIMeshGenerator(
+		Component parent,
+		MeshGenerator meshGenerator
+	) {
 		super(meshGenerator);
 		this.parent = parent;
 	}
 
-	
+
 	protected void showException(Exception e) {
 		super.showException(e); // output to Console as well
 		ShowException.msgBox(parent, "Mesh generation error", e);

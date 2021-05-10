@@ -23,20 +23,21 @@
 package net.katsstuff.arbaro.params;
 
 /**
- * Random class to add variations to the tree. It has methods
- * getState() and setState() to save and restore the random seed
+ * Random class to add variations to the tree. It has methods getState() and setState() to save and restore the random
+ * seed
  */
 public class Random extends java.util.Random {
+
 	private static final long serialVersionUID = 1L;
 
 	public Random(long seed) {
 		super(seed);
 	}
-	
+
 	public double uniform(double low, double high) {
-		return low+nextDouble()*(high-low);
+		return low + nextDouble() * (high - low);
 	}
-	
+
 	public long getState() {
 		// the original random generator doesn't provide an interface
 		// to read, and reset it's state, so this is a hack here, to make
@@ -46,7 +47,7 @@ public class Random extends java.util.Random {
 		setSeed(state);
 		return state;
 	}
-	
+
 	public void setState(long state) {
 		setSeed(state);
 	}

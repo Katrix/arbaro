@@ -26,9 +26,9 @@ import net.katsstuff.arbaro.params.Params;
 
 /**
  * @author wolfram
- *
  */
 public class TreeGeneratorFactory {
+
 	static public TreeGenerator createTreeGenerator() {
 		return new TreeGeneratorImpl();
 	}
@@ -44,6 +44,4 @@ public class TreeGeneratorFactory {
 	static public TreeGenerator createShieldedTreeGenerator(Params params) {
 		return new ShieldedTreeGenerator(new TreeGeneratorImpl(params));
 	}
-
-
-}	
+}

@@ -26,16 +26,18 @@ import net.katsstuff.arbaro.transformation.Vector;
 
 /**
  * @author wdiestel
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 	<p>
+ * 	TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style - Code
+ * 	Templates
  */
 public final class VFace {
-	public Vector [] points;
-    public VFace(Vector u, Vector v, Vector w) {
-    	points = new Vector[3];
-    	points[0]=u;
-    	points[1]=v;
-    	points[2]=w;
-    }
+
+	public Vector[] points;
+
+	public VFace(Vector u, Vector v, Vector w) {
+		points = new Vector[3];
+		points[0] = u;
+		points[1] = v;
+		points[2] = w;
+	}
 }

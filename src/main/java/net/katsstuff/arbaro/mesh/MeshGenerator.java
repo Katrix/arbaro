@@ -12,5 +12,4 @@ public interface MeshGenerator {
 	public abstract LeafMesh createLeafMesh(Tree tree, boolean useQuads);
 
 	public boolean getUseQuads();
-
 }

@@ -25,14 +25,13 @@ package net.katsstuff.arbaro.export;
 import java.io.PrintWriter;
 
 /**
- * Exporter Facade with exception handling. Delegates all methods
- * of the Exporter interface to an exporter object given in then
- * constructor. Exceptions are printed to the console.
+ * Exporter Facade with exception handling. Delegates all methods of the Exporter interface to an exporter object given
+ * in then constructor. Exceptions are printed to the console.
  */
 public class ShieldedExporter implements Exporter {
-    
+
 	private Exporter exporter;
-	
+
 	public ShieldedExporter(Exporter exporter) {
 		this.exporter = exporter;
 	}
@@ -44,9 +43,9 @@ public class ShieldedExporter implements Exporter {
 		Console.errorOutput("Export error:");
 		Console.printException(e);
 	}
-	
+
 	/**
-	 * Delegates to exporter.getWriter and handles exceptions 
+	 * Delegates to exporter.getWriter and handles exceptions
 	 */
 	public PrintWriter getWriter() {
 		try {
@@ -58,14 +57,13 @@ public class ShieldedExporter implements Exporter {
 	}
 
 	/**
-	 * Delegates to exporter.write and handles exceptions 
+	 * Delegates to exporter.write and handles exceptions
 	 */
-	public void write(PrintWriter w, Progress progress)  {
+	public void write(PrintWriter w, Progress progress) {
 		try {
-			exporter.write(w,progress);
+			exporter.write(w, progress);
 		} catch (Exception e) {
 			showException(e);
 		}
 	}
-
 }

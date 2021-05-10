@@ -28,18 +28,20 @@ import javax.swing.JOptionPane;
 
 /**
  * @author wolfram
- *
  */
 public class ShowException {
-	
-	static public void msgBox(Component parent, 
-			String title, Exception e) {
-		
+
+	static public void msgBox(
+		Component parent,
+		String title, Exception e
+	) {
+
 		JLabel msg = new JLabel(e.getMessage());
 		//    		Dimension dim = msg.getMaximumSize();
 		//    		dim.setSize(100,dim.getHeight());
 		//    		msg.setMaximumSize(dim);
-		JOptionPane.showMessageDialog(parent,msg,
-				title,JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(parent, msg,
+			title, JOptionPane.ERROR_MESSAGE
+		);
 	}
 }

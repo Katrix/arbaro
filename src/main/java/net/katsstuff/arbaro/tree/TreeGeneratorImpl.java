@@ -24,16 +24,15 @@ package net.katsstuff.arbaro.tree;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
-
 import net.katsstuff.arbaro.export.Progress;
 import net.katsstuff.arbaro.params.AbstractParam;
 import net.katsstuff.arbaro.params.Params;
 
 /**
  * @author wolfram
- *
  */
 class TreeGeneratorImpl implements TreeGenerator {
+
 	Params params;
 
 	/* (non-Javadoc)
@@ -42,16 +41,16 @@ class TreeGeneratorImpl implements TreeGenerator {
 	public Tree makeTree(Progress progress) {
 		TreeImpl tree = new TreeImpl(seed, params);
 		tree.make(progress);
-		
+
 		return tree;
 	}
-	
+
 	private int seed = 13;
 
 	public TreeGeneratorImpl() {
 		params = new Params();
 	}
-	
+
 	public TreeGeneratorImpl(Params params) {
 		this.params = params;
 	}
@@ -62,29 +61,29 @@ class TreeGeneratorImpl implements TreeGenerator {
 	public void setSeed(int seed) {
 		this.seed = seed;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#getSeed()
 	 */
 	public int getSeed() {
 		return seed;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#getParams()
 	 */
 	public Params getParams() {
 		return params;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#setParam(java.lang.String, java.lang.String)
 	 */
 	public void setParam(String param, String value) {
-		params.setParam(param,value);
+		params.setParam(param, value);
 	}
-	
+
 	// TODO: not used at the moment, may be the GUI
 	// should get a TreeGenerator as a ParamContainer
 	// and tree maker, and not work directly with Params
@@ -95,7 +94,7 @@ class TreeGeneratorImpl implements TreeGenerator {
 	public AbstractParam getParam(String param) {
 		return params.getParam(param);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#getParamGroup(int, java.lang.String)
 	 */
@@ -104,7 +103,7 @@ class TreeGeneratorImpl implements TreeGenerator {
 	// and tree maker, and not work directly with Params
 	// class
 	public java.util.TreeMap getParamGroup(int level, String group) {
-		return params.getParamGroup(level,group);
+		return params.getParamGroup(level, group);
 	}
 
 	/* (non-Javadoc)
@@ -117,26 +116,25 @@ class TreeGeneratorImpl implements TreeGenerator {
 	public void writeParamsToXML(PrintWriter out) {
 		params.toXML(out);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#clearParams()
 	 */
 	public void clearParams() {
 		params.clearParams();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#readParamsFromXML(java.io.InputStream)
 	 */
 	public void readParamsFromXML(InputStream is) {
 		params.readFromXML(is);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.katsstuff.arbaro.tree.TreeGenerator#readParamsFromCfg(java.io.InputStream)
 	 */
 	public void readParamsFromCfg(InputStream is) {
 		params.readFromCfg(is);
 	}
-
 }

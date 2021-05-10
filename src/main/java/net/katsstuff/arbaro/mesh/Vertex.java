@@ -26,18 +26,18 @@ import net.katsstuff.arbaro.transformation.Vector;
 
 /**
  * A class holding a point and a normal vector
- * 
- * @author Wolfram Diestel
  *
+ * @author Wolfram Diestel
  */
 public final class Vertex {
-    public Vector point;
-    public Vector normal;
-    public UVVector uv; // uv-coordinate 
 
-    Vertex(Vector pt, Vector norm, UVVector uv_) {
-    	point = pt;
-    	normal = norm;
-    	uv = uv_;
-    }
+	public Vector point;
+	public Vector normal;
+	public UVVector uv; // uv-coordinate
+
+	Vertex(Vector pt, Vector norm, UVVector uv_) {
+		point = pt;
+		normal = norm;
+		uv = uv_;
+	}
 }

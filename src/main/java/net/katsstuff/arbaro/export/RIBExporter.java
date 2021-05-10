@@ -23,23 +23,27 @@
 
 package net.katsstuff.arbaro.export;
 
-import java.io.PrintWriter;
-import java.lang.Double;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Enumeration;
 import java.util.Calendar;
-
-import net.katsstuff.arbaro.export.StringIndenter;
-import net.katsstuff.arbaro.mesh.*;
-import net.katsstuff.arbaro.params.*;
+import java.util.Enumeration;
+import net.katsstuff.arbaro.mesh.Face;
+import net.katsstuff.arbaro.mesh.LeafMesh;
+import net.katsstuff.arbaro.mesh.Mesh;
+import net.katsstuff.arbaro.mesh.MeshGenerator;
+import net.katsstuff.arbaro.mesh.MeshPart;
+import net.katsstuff.arbaro.mesh.UVVector;
+import net.katsstuff.arbaro.mesh.Vertex;
+import net.katsstuff.arbaro.params.FloatFormat;
 import net.katsstuff.arbaro.transformation.Box;
 import net.katsstuff.arbaro.transformation.Vector;
-import net.katsstuff.arbaro.tree.*;
-
+import net.katsstuff.arbaro.tree.DefaultTreeTraversal;
+import net.katsstuff.arbaro.tree.Leaf;
+import net.katsstuff.arbaro.tree.Tree;
 
 
 class RIBLeafTraversal extends DefaultTreeTraversal {
+
 	java.util.Vector leafNormalClusters = new java.util.Vector();
 	java.util.Vector leafNormals = new java.util.Vector();
 	java.util.Vector leafVertexClusters = new java.util.Vector();
@@ -58,9 +62,9 @@ class RIBLeafTraversal extends DefaultTreeTraversal {
 
 	public boolean visitLeaf(Leaf l) {
 
-		Vector start = new Vector(0,0,tree.getLeafLength()*tree.getLeafStemLength());
-		Vector end = new Vector(0,0,tree.getLeafLength()*(1+tree.getLeafStemLength()));
-		Vector normal = new Vector( 0, 1, 0 );
+		Vector start = new Vector(0, 0, tree.getLeafLength() * tree.getLeafStemLength());
+		Vector end = new Vector(0, 0, tree.getLeafLength() * (1 + tree.getLeafStemLength()));
+		Vector normal = new Vector(0, 1, 0);
 
 		start = l.getTransformation().apply(start);
 		end = l.getTransformation().apply(end);
@@ -70,11 +74,11 @@ class RIBLeafTraversal extends DefaultTreeTraversal {
 		leafVertices.addElement(end);
 		leafNormals.addElement(normal);
 
-		if( maxLeaves == ++counter ) {
+		if (maxLeaves == ++counter) {
 			counter = 0;
-			leafVertexClusters.addElement( leafVertices );
+			leafVertexClusters.addElement(leafVertices);
 			leafVertices = new java.util.Vector();
-			leafNormalClusters.addElement( leafNormals );
+			leafNormalClusters.addElement(leafNormals);
 			leafNormals = new java.util.Vector();
 		}
 
@@ -82,8 +86,8 @@ class RIBLeafTraversal extends DefaultTreeTraversal {
 	}
 
 	public java.util.Vector getVertexClusters() {
-		if(0<leafVertices.size()) {
-			leafVertexClusters.addElement( leafVertices );
+		if (0 < leafVertices.size()) {
+			leafVertexClusters.addElement(leafVertices);
 			leafVertices = null;
 		}
 
@@ -91,7 +95,7 @@ class RIBLeafTraversal extends DefaultTreeTraversal {
 	}
 
 	public java.util.Vector getNormalClusters() {
-		if(0<leafNormals.size()) {
+		if (0 < leafNormals.size()) {
 			leafNormalClusters.addElement(leafNormals);
 			leafNormals = null;
 		}
@@ -103,27 +107,25 @@ class RIBLeafTraversal extends DefaultTreeTraversal {
 
 /**
  * Exports a tree mesh as RenderMan RIB file
- *
  */
 final class RIBExporter extends MeshExporter {
+
 	NumberFormat frm = FloatFormat.getInstance();
 	Tree tree;
 	Mesh mesh;
 	java.util.Vector leafVertexClusters;
 	java.util.Vector leafNormalClusters;
 	String namePrefix;
-	StringIndenter indent=new StringIndenter("  ");
+	StringIndenter indent = new StringIndenter("  ");
 	Box bounds = new Box();
 
-	public boolean outputLeafUVs=true;
-	public boolean outputStemUVs=true;
+	public boolean outputLeafUVs = true;
+	public boolean outputStemUVs = true;
 
 	boolean outputNormals = false;
 
 	/**
-	 * @param aTree
-	 * @param pw
-	 * @param p
+	 *
 	 */
 	public RIBExporter(Tree tree, MeshGenerator meshGenerator) {
 		super(meshGenerator);
@@ -131,7 +133,7 @@ final class RIBExporter extends MeshExporter {
 		this.namePrefix = tree.getSpecies() + "_";
 	}
 
-	public void doWrite()  {
+	public void doWrite() {
 		writeHeader();
 
 		// need to run those here to find bounds
@@ -152,14 +154,14 @@ final class RIBExporter extends MeshExporter {
 	}
 
 	private void print(String what) {
-		if (0<what.length()) {
-			w.print(indent.getIndent()+what);
+		if (0 < what.length()) {
+			w.print(indent.getIndent() + what);
 		}
 	}
 
 	private void println(String what) {
-		if (0<what.length()) {
-			w.println(indent.getIndent()+what);
+		if (0 < what.length()) {
+			w.println(indent.getIndent() + what);
 		} else {
 			w.println();
 		}
@@ -178,10 +180,10 @@ final class RIBExporter extends MeshExporter {
 	private void writeHeader() {
 
 		println("##RenderMan RIB-Structure 1.1");
-		println("##Scene "+namePrefix+"tree");
-		println("##Creator Arbarao 2.1 "+ System.getProperty("os.name") + " " + System.getProperty("os.arch"));
-		println("##CreationDate "+now());
-		println("##For "+System.getProperty("user.name"));
+		println("##Scene " + namePrefix + "tree");
+		println("##Creator Arbarao 2.1 " + System.getProperty("os.name") + " " + System.getProperty("os.arch"));
+		println("##CreationDate " + now());
+		println("##For " + System.getProperty("user.name"));
 		println("##Shaders leaf stem");
 		println("##CapabilitiesNeeded ShadingLanguage");
 		println("##Shaders stem, leaf");
@@ -189,7 +191,7 @@ final class RIBExporter extends MeshExporter {
 	}
 
 	private void buildLeafData() {
-		LeafMesh leafMesh = meshGenerator.createLeafMesh(tree,meshGenerator.getUseQuads());
+		LeafMesh leafMesh = meshGenerator.createLeafMesh(tree, meshGenerator.getUseQuads());
 
 		RIBLeafTraversal leafWalker = new RIBLeafTraversal(tree);
 		tree.traverseTree(leafWalker);
@@ -199,10 +201,10 @@ final class RIBExporter extends MeshExporter {
 		Enumeration vertexClusters = leafVertexClusters.elements();
 		while (vertexClusters.hasMoreElements()) {
 
-			Enumeration vertices = ((java.util.Vector)vertexClusters.nextElement()).elements();
+			Enumeration vertices = ((java.util.Vector) vertexClusters.nextElement()).elements();
 
 			while (vertices.hasMoreElements()) {
-				Vector vector = (Vector)vertices.nextElement();
+				Vector vector = (Vector) vertices.nextElement();
 				// bounding sphere expansion
 				// should cover our ass for any leaf type added in the future :)
 				bounds.extendBy(vector, tree.getLeafWidth());
@@ -211,12 +213,12 @@ final class RIBExporter extends MeshExporter {
 	}
 
 	private void buildStemData() {
-		mesh = meshGenerator.createStemMeshByLevel(tree,progress);
+		mesh = meshGenerator.createStemMeshByLevel(tree, progress);
 
 		Enumeration vertices = mesh.allVertices(false);
 
 		while (vertices.hasMoreElements()) {
-			Vertex vertex = (Vertex)vertices.nextElement();
+			Vertex vertex = (Vertex) vertices.nextElement();
 			bounds.extendBy(vertex.point);
 		}
 	}
@@ -231,12 +233,11 @@ final class RIBExporter extends MeshExporter {
 		println("# Bounds" + boundString);
 		println("Bound" + boundString);
 		println();
-
 	}
 
 	private void writeInfo() {
-		println("# Species "+tree.getSpecies());
-		println("# Seed "+tree.getSeed());
+		println("# Species " + tree.getSpecies());
+		println("# Seed " + tree.getSeed());
 		println();
 	}
 
@@ -247,25 +248,25 @@ final class RIBExporter extends MeshExporter {
 		println("# {");
 		println();
 
-		println("ArchiveBegin \""+namePrefix+"leaf_look\"  # {");
+		println("ArchiveBegin \"" + namePrefix + "leaf_look\"  # {");
 		indent.increase();
-			println("Sides 2");
-			//println("IfBegin \"!defined(ArbaroRendering)\"");
-			//indent.increase();
-				println("Surface \"leaf\"");
-			//indent.decrease();
-			//println("IfEnd");
+		println("Sides 2");
+		//println("IfBegin \"!defined(ArbaroRendering)\"");
+		//indent.increase();
+		println("Surface \"leaf\"");
+		//indent.decrease();
+		//println("IfEnd");
 		indent.decrease();
 		println("ArchiveEnd  # }");
 		println();
-		println("ArchiveBegin \""+namePrefix+"stem_look\"  # {");
+		println("ArchiveBegin \"" + namePrefix + "stem_look\"  # {");
 		indent.increase();
-			println("Sides 1");
-			//println("IfBegin \"!defined(ArbaroRendering)\"");
-			//indent.increase();
-				println("Surface \"stem\"");
-			//indent.decrease();
-			//println("IfEnd");
+		println("Sides 1");
+		//println("IfBegin \"!defined(ArbaroRendering)\"");
+		//indent.increase();
+		println("Surface \"stem\"");
+		//indent.decrease();
+		//println("IfEnd");
 		indent.decrease();
 		println("ArchiveEnd  # }");
 		println();
@@ -274,23 +275,21 @@ final class RIBExporter extends MeshExporter {
 		println("# End of look archives");
 		println("#");
 		println();
-
 	}
 
 	private void writePrimvars() {
 
-		println("\"constant string species\" [ \""+tree.getSpecies()+"\" ]");
-		println("\"constant int seed\" [ "+tree.getSeed()+" ]");
-
+		println("\"constant string species\" [ \"" + tree.getSpecies() + "\" ]");
+		println("\"constant int seed\" [ " + tree.getSeed() + " ]");
 	}
 
 	private void writeTree() {
 
 		println();
 
-		long objCount = (tree.getStemCount()+tree.getLeafCount())*(outputNormals? 2 : 1);
+		long objCount = (tree.getStemCount() + tree.getLeafCount()) * (outputNormals ? 2 : 1);
 
-		progress.beginPhase("Writing stem primitives",objCount);
+		progress.beginPhase("Writing stem primitives", objCount);
 
 		writeStemObject();
 
@@ -298,12 +297,11 @@ final class RIBExporter extends MeshExporter {
 
 		println();
 
-		progress.beginPhase("Writing leaves primitives",objCount);
+		progress.beginPhase("Writing leaves primitives", objCount);
 
 		writeLeafObject();
 
 		progress.endPhase();
-
 	}
 
 	private void writeTreeInstance() {
@@ -315,9 +313,9 @@ final class RIBExporter extends MeshExporter {
 		println("AttributeBegin  # {");
 		indent.increase();
 
-		println("Attribute \"identifier\" \"name\" [ \""+namePrefix+"leaves\" ]");
-		println("ReadArchive \""+namePrefix+"leaf_look\"");
-		println("ObjectInstance \""+namePrefix+"leaf_gprims\"");
+		println("Attribute \"identifier\" \"name\" [ \"" + namePrefix + "leaves\" ]");
+		println("ReadArchive \"" + namePrefix + "leaf_look\"");
+		println("ObjectInstance \"" + namePrefix + "leaf_gprims\"");
 
 		indent.decrease();
 		println("AttributeEnd  # }");
@@ -328,9 +326,9 @@ final class RIBExporter extends MeshExporter {
 		println("AttributeBegin  # {");
 		indent.increase();
 
-		println("Attribute \"identifier\" \"name\" [ \""+namePrefix+"stems\" ]");
-		println("ReadArchive \""+namePrefix+"stem_look\"");
-		println("ObjectInstance \""+namePrefix+"stem_gprims\"");
+		println("Attribute \"identifier\" \"name\" [ \"" + namePrefix + "stems\" ]");
+		println("ReadArchive \"" + namePrefix + "stem_look\"");
+		println("ObjectInstance \"" + namePrefix + "stem_gprims\"");
 
 		indent.decrease();
 		println("AttributeEnd  # }");
@@ -338,26 +336,25 @@ final class RIBExporter extends MeshExporter {
 		println();
 		println("# end geometry");
 		println("#");
-
 	}
 
 	private void writeLeafObject() {
 
-		if (0<leafVertexClusters.size()) {
+		if (0 < leafVertexClusters.size()) {
 
 			println("#");
 			println("# Start of leaves geometry");
 			println("# {");
 			println();
 
-			println("ObjectBegin \""+namePrefix+"leaf_gprims\"  # {");
+			println("ObjectBegin \"" + namePrefix + "leaf_gprims\"  # {");
 			indent.increase();
 
 			Enumeration vertexClusters = leafVertexClusters.elements();
 			Enumeration normalClusters = leafNormalClusters.elements();
 			while (vertexClusters.hasMoreElements()) {
 
-				java.util.Vector leafVertices = (java.util.Vector)vertexClusters.nextElement();
+				java.util.Vector leafVertices = (java.util.Vector) vertexClusters.nextElement();
 
 				println("Curves \"linear\"");
 				indent.increase();
@@ -366,7 +363,7 @@ final class RIBExporter extends MeshExporter {
 
 				int elementCounter = 0;
 
-				for (int i=0; i < leafVertices.size()/2; i++) {
+				for (int i = 0; i < leafVertices.size() / 2; i++) {
 					if (17 < elementCounter++) {
 						elementCounter = 1;
 						println();
@@ -380,7 +377,6 @@ final class RIBExporter extends MeshExporter {
 
 				print("\"P\" [ ");
 
-
 				Enumeration vertices = leafVertices.elements();
 				elementCounter = 0;
 
@@ -390,13 +386,13 @@ final class RIBExporter extends MeshExporter {
 						println();
 						print("  ");
 					}
-					writeVector((Vector)vertices.nextElement());
+					writeVector((Vector) vertices.nextElement());
 				}
 				w.println("]");
 
 				print("\"varying normal N\" [ ");
 
-				Enumeration normals = ((java.util.Vector)normalClusters.nextElement()).elements();
+				Enumeration normals = ((java.util.Vector) normalClusters.nextElement()).elements();
 				elementCounter = 0;
 
 				while (normals.hasMoreElements()) {
@@ -405,14 +401,14 @@ final class RIBExporter extends MeshExporter {
 						println();
 						print("  ");
 					}
-					Vector normal=(Vector)normals.nextElement();
+					Vector normal = (Vector) normals.nextElement();
 					writeVector(normal);
 					writeVector(normal);
 					//writeVector((Vector)normals.nextElement());
 				}
 				w.println("]");
 
-				println("\"constantwidth\" [ "+tree.getLeafWidth()+" ]");
+				println("\"constantwidth\" [ " + tree.getLeafWidth() + " ]");
 
 				writePrimvars();
 
@@ -438,13 +434,13 @@ final class RIBExporter extends MeshExporter {
 		println("# {");
 		println();
 
-		println("ObjectBegin \""+namePrefix+"stem_gprims\"  # {");
+		println("ObjectBegin \"" + namePrefix + "stem_gprims\"  # {");
 		indent.increase();
 
-		for (int stemLevel = 0; stemLevel<tree.getLevels(); stemLevel++) {
+		for (int stemLevel = 0; stemLevel < tree.getLevels(); stemLevel++) {
 
-			for (Enumeration parts=mesh.allParts(stemLevel);
-			        parts.hasMoreElements();) {
+			for (Enumeration parts = mesh.allParts(stemLevel);
+				parts.hasMoreElements(); ) {
 
 				// => start a gprim
 				if (outputNormals) {
@@ -456,7 +452,7 @@ final class RIBExporter extends MeshExporter {
 
 				indent.increase();
 
-				MeshPart mp = (MeshPart)parts.nextElement();
+				MeshPart mp = (MeshPart) parts.nextElement();
 
 				long highestVertexIndex = 0;
 				{
@@ -464,7 +460,7 @@ final class RIBExporter extends MeshExporter {
 
 					// output number of vertices per each face
 
-					Enumeration faces=mp.allFaces(mesh,vertexOffset,false);
+					Enumeration faces = mp.allFaces(mesh, vertexOffset, false);
 					elementCounter = 0;
 
 					while (faces.hasMoreElements()) {
@@ -474,8 +470,8 @@ final class RIBExporter extends MeshExporter {
 							print("  ");
 						}
 
-						Face face = (Face)faces.nextElement();
-						w.print(face.points.length+" ");
+						Face face = (Face) faces.nextElement();
+						w.print(face.points.length + " ");
 
 						// TODO: add getHighestPointIndex() or similar function to mesh class
 						// This code assumes that the highest vertex index is always the tip
@@ -487,12 +483,11 @@ final class RIBExporter extends MeshExporter {
 					w.println("]");
 				}
 
-
 				// output face vertex indices
 				{
 					print("[ ");
 
-					Enumeration faces=mp.allFaces(mesh,vertexOffset,false);
+					Enumeration faces = mp.allFaces(mesh, vertexOffset, false);
 					elementCounter = 0;
 
 					while (faces.hasMoreElements()) {
@@ -502,7 +497,7 @@ final class RIBExporter extends MeshExporter {
 							print("  ");
 						}
 
-						Face face = (Face)faces.nextElement();
+						Face face = (Face) faces.nextElement();
 						//Face uvFace = (Face)uvFaces.nextElement();
 						writeFaceVertexIndices(face);
 					}
@@ -512,7 +507,10 @@ final class RIBExporter extends MeshExporter {
 				if (!outputNormals) {
 					// output tags for subdivision surface
 					// this will make sure the renderer interpolates any open mesh boundaries and the tips of the stems
-					println("[ \"interpolateboundary\" \"facevaryinginterpolateboundary\" \"corner\" ] [ 1 0 1 0 1 1 ] [ 1 1 "+highestVertexIndex+" ] [ 10 ]");
+					println(
+						"[ \"interpolateboundary\" \"facevaryinginterpolateboundary\" \"corner\" ] [ 1 0 1 0 1 1 ] [ 1 1 "
+						+ highestVertexIndex
+						+ " ] [ 10 ]");
 				}
 
 				// output vertex data
@@ -529,7 +527,7 @@ final class RIBExporter extends MeshExporter {
 							print("  ");
 						}
 
-						Vertex vertex = (Vertex)vertices.nextElement();
+						Vertex vertex = (Vertex) vertices.nextElement();
 						writeVector(vertex.point);
 					}
 					w.println("]");
@@ -548,7 +546,7 @@ final class RIBExporter extends MeshExporter {
 							println();
 							print("  ");
 						}
-						Vertex vertex = (Vertex)vertices.nextElement();
+						Vertex vertex = (Vertex) vertices.nextElement();
 						writeVector(vertex.normal);
 					}
 					w.println("]");
@@ -568,7 +566,7 @@ final class RIBExporter extends MeshExporter {
 							print("  ");
 						}
 
-						UVVector vertex = (UVVector)vertices.nextElement();
+						UVVector vertex = (UVVector) vertices.nextElement();
 						writeUVPrimvar(vertex);
 					}
 					w.println("]");
@@ -592,26 +590,23 @@ final class RIBExporter extends MeshExporter {
 		println("# }");
 		println("# End of stems geometry");
 		println("#");
-
 	}
-
 
 
 	private void writeVector(Vector v) {
-		w.print(frm.format(v.getX())+" "
-				+frm.format(v.getZ())+" "
-				+frm.format(v.getY())+" ");
+		w.print(frm.format(v.getX()) + " "
+				+ frm.format(v.getZ()) + " "
+				+ frm.format(v.getY()) + " ");
 	}
 
 	private void writeUVPrimvar(UVVector v) {
-		w.print(frm.format(v.u)+" "
-				+frm.format(v.v)+" ");
+		w.print(frm.format(v.u) + " "
+				+ frm.format(v.v) + " ");
 	}
 
 	private void writeFaceVertexIndices(Face f) {
-		for (int i=0; i<f.points.length; i++) {
-			w.print(f.points[i]+" ");
+		for (int i = 0; i < f.points.length; i++) {
+			w.print(f.points[i] + " ");
 		}
 	}
-
 }

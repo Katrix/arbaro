@@ -34,53 +34,61 @@ public final class Progress {
 	String phase;
 	long maxProgress;
 	long progress;
-	
+
 	public Progress() {
-		maxProgress=100;
-		progress=0;
+		maxProgress = 100;
+		progress = 0;
 	}
-	
-	
+
+
 	synchronized public void beginPhase(String ph, long max) {
 		phase = ph;
 		maxProgress = max;
 		progress = 0;
-		
+
 		Console.verboseOutput(ph);
 	}
-	
+
 	synchronized public void endPhase() {
 		progress = maxProgress;
-		
+
 		Console.verboseOutput("");
 	}
-	
+
 	synchronized public void setProgress(long prog) /*throws ProgressError*/ {
-		if (prog>maxProgress)
+		if (prog > maxProgress) {
 			progress = maxProgress;
-		else
+		} else
 //			throw new ProgressError("Error in progress. The progress "+prog+ 
 //					" shouldn't exceed "+maxProgress+".");
-		progress = prog;
+		{
+			progress = prog;
+		}
 	}
-	
+
 	synchronized public void incProgress(long inc) {
 		progress += inc;
 	}
-	
+
 	synchronized public int getPercent() {
-		if (maxProgress<=0) return -1; // indeterminate
-	
-		int percent = (int)(progress/(float)maxProgress*100);
-		if (percent<0) return 0;
-		else if (percent>100) return 100;
-		else return percent;
+		if (maxProgress <= 0) {
+			return -1; // indeterminate
+		}
+
+		int percent = (int) (progress / (float) maxProgress * 100);
+		if (percent < 0) {
+			return 0;
+		} else if (percent > 100) {
+			return 100;
+		} else {
+			return percent;
+		}
 	}
-	
+
 	synchronized public String getPhase() {
 		return phase;
 	}
-	
+
 	synchronized public long getMaxProgress() {
 		return maxProgress;
 	}

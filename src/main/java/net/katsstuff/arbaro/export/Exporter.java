@@ -28,14 +28,14 @@ package net.katsstuff.arbaro.export;
 import java.io.PrintWriter;
 
 /**
- * Base class for tree output to 3D-formats like Povray, DXF 
- * and Wavefront OBJ file formats
- * 
- * @author Wolfram Diestel
+ * Base class for tree output to 3D-formats like Povray, DXF and Wavefront OBJ file formats
  *
+ * @author Wolfram Diestel
  */
 public interface Exporter {
+
 	public abstract void write(PrintWriter w, Progress progress);
+
 	public abstract PrintWriter getWriter();
 }
 

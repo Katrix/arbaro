@@ -23,25 +23,26 @@
 package net.katsstuff.arbaro.mesh;
 
 import java.util.Enumeration;
-
-import net.katsstuff.arbaro.transformation.*;
-import net.katsstuff.arbaro.tree.*;
 import net.katsstuff.arbaro.export.Progress;
+import net.katsstuff.arbaro.transformation.Transformation;
+import net.katsstuff.arbaro.transformation.Vector;
+import net.katsstuff.arbaro.tree.Stem;
+import net.katsstuff.arbaro.tree.StemSection;
 
 
 /**
  * Creates a MeshPart for a Stem
- * 
- * @author wolfram
  *
+ * @author wolfram
  */
 class MeshPartCreator {
+
 	MeshPart meshPart;
 	boolean useQuads;
 	Stem stem;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public MeshPartCreator(Stem stem, /*Params params,*/ boolean useQuads) {
 		super();
@@ -51,84 +52,87 @@ class MeshPartCreator {
 		this.stem = stem;
 	}
 
-	
+
 	public MeshPart createMeshPart(Progress progress) {
 		meshPart = new MeshPart(stem, stem.isSmooth(), useQuads);
 //try {
-		double vLength = stem.getLength()+stem.getBaseRadius()+stem.getPeakRadius();
+		double vLength = stem.getLength() + stem.getBaseRadius() + stem.getPeakRadius();
 		//double vBase = + stem.stemRadius(0);
-		
+
 		// first section
 		Enumeration sections = stem.sections();
-		StemSection section = (StemSection)sections.nextElement();
-		
+		StemSection section = (StemSection) sections.nextElement();
+
 		// first section - create lower meshpoints
 		// one point at the stem origin, with normal in reverse z-direction
-		createMidPoint(section,0);
-		((MeshSection)meshPart.firstElement()).setNormalsToVector(section.getZ().mul(-1));
-	
-		while (true) {
-			
-			// create meshpoints at each section
-			createSectionMeshpoints(section,
-					/*vBase+*/section.getDistance()/vLength);
-				//(/*vBase+*/segment.getIndex()*segment.getLength()+ss.getHeight())/vLength);
+		createMidPoint(section, 0);
+		((MeshSection) meshPart.firstElement()).setNormalsToVector(section.getZ().mul(-1));
 
-			if (! sections.hasMoreElements()) {
+		while (true) {
+
+			// create meshpoints at each section
+			createSectionMeshpoints(
+				section,
+				/*vBase+*/section.getDistance() / vLength
+			);
+			//(/*vBase+*/segment.getIndex()*segment.getLength()+ss.getHeight())/vLength);
+
+			if (!sections.hasMoreElements()) {
 				// last section - close mesh with normal in z-direction
-				
-				if (section.getRadius()>0.000001) {
-					createMidPoint(section,1);
+
+				if (section.getRadius() > 0.000001) {
+					createMidPoint(section, 1);
 				}
-				
+
 				//DBG System.err.println("LAST StemSegm, setting normals to Z-dir");
-				((MeshSection)meshPart.lastElement()).setNormalsToVector(section.getZ());
+				((MeshSection) meshPart.lastElement()).setNormalsToVector(section.getZ());
 			}
 
 			// next section
-			if (sections.hasMoreElements())
-				section = (StemSection)sections.nextElement();
-			else
+			if (sections.hasMoreElements()) {
+				section = (StemSection) sections.nextElement();
+			} else {
 				break;
+			}
 		}
-		
+
 //} catch (Exception e) {
 //	Console.errorOutput("Mesh creation error for stem: " + stem.getTreePosition());
 //	throw new RuntimeException(e.getMessage());
 //}
-		
-		if (meshPart.size()>0)
+
+		if (meshPart.size() > 0) {
 			return meshPart;
-		else
+		} else {
 			return null;
+		}
 	}
 
 
 	private void createMidPoint(StemSection sec, double vMap) {
 		// create only one point in the middle of the sections
-		MeshSection section = new MeshSection(1,vMap);
-		Transformation trf = sec.getTransformation(); 
-		section.addPoint(trf.apply(new Vector(0,0,0)),0.5);
+		MeshSection section = new MeshSection(1, vMap);
+		Transformation trf = sec.getTransformation();
+		section.addPoint(trf.apply(new Vector(0, 0, 0)), 0.5);
 		meshPart.addSection(section);
 	}
 
-	
+
 	private void createSectionMeshpoints(StemSection sec, double vMap) {
 		Vector[] points = sec.getSectionPoints();
-		
-		MeshSection section = new MeshSection(points.length,vMap);
-			//stem.DBG("MESH+LOBES: lobes: %d, depth: %f\n"%(self.tree.Lobes, self.tree.LobeDepth))
-			
-		if (points.length == 1)
-			section.addPoint(points[0],0.5);
-		else { 
-			for (int i=0; i<points.length; i++) {
-				double angle = i*360.0/points.length;
-				section.addPoint(points[i],angle/360.0);
+
+		MeshSection section = new MeshSection(points.length, vMap);
+		//stem.DBG("MESH+LOBES: lobes: %d, depth: %f\n"%(self.tree.Lobes, self.tree.LobeDepth))
+
+		if (points.length == 1) {
+			section.addPoint(points[0], 0.5);
+		} else {
+			for (int i = 0; i < points.length; i++) {
+				double angle = i * 360.0 / points.length;
+				section.addPoint(points[i], angle / 360.0);
 			}
-		}	
-			//add section to the mesh part
+		}
+		//add section to the mesh part
 		meshPart.addSection(section);
 	}
-
 }

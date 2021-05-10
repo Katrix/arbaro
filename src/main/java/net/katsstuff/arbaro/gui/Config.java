@@ -22,11 +22,13 @@
 
 package net.katsstuff.arbaro.gui;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Properties;
 
 
 class Config extends Properties {
+
 	private static final long serialVersionUID = 1L;
 
 	String configFileName;
@@ -44,20 +46,23 @@ class Config extends Properties {
 		}
 
 		// load properties
-		FileInputStream in=null;
+		FileInputStream in = null;
 
 		try {
 			in = new FileInputStream(configFileName);
 			load(in);
 		} catch (java.io.FileNotFoundException e) {
 			in = null;
-			System.err.println("Can't find config file. Please do setup Arbaro "+
-			"using the setup dialog.");
+			System.err.println("Can't find config file. Please do setup Arbaro " +
+							   "using the setup dialog.");
 		} catch (java.io.IOException e) {
 			System.err.println("I/O Error. Can't read config file!");
 		} finally {
 			if (in != null) {
-				try { in.close(); } catch (java.io.IOException e) { }
+				try {
+					in.close();
+				} catch (java.io.IOException e) {
+				}
 				in = null;
 			}
 		}
@@ -68,12 +73,15 @@ class Config extends Properties {
 
 		try {
 			out = new FileOutputStream(configFileName);
-			store(out,"Arbaro setup");
+			store(out, "Arbaro setup");
 		} catch (java.io.IOException e) {
 			throw new Exception("Can't save config file.");
 		} finally {
 			if (out != null) {
-				try { out.close(); } catch (java.io.IOException e) { }
+				try {
+					out.close();
+				} catch (java.io.IOException e) {
+				}
 				out = null;
 			}
 		}
@@ -87,7 +95,6 @@ class Config extends Properties {
 			return "povray"; // Unix
 		}
 	}
-
 };
 
 

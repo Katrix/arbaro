@@ -22,10 +22,13 @@
 
 package net.katsstuff.arbaro.params;
 
-import javax.swing.event.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import net.katsstuff.arbaro.export.Console;
 
 public abstract class AbstractParam {
+
 	public static final int GENERAL = -999; // no level - general params
 	String name;
 	String group;
@@ -38,53 +41,61 @@ public abstract class AbstractParam {
 	protected ChangeEvent changeEvent = null;
 	protected EventListenerList listenerList = new EventListenerList();
 
-	public AbstractParam(String nam, String grp, int lev, int ord,
-			String sh, String lng) {
+	public AbstractParam(
+		String nam, String grp, int lev, int ord,
+		String sh, String lng
+	) {
 		name = nam;
 		group = grp;
 		level = lev;
 		order = ord;
 		shortDesc = sh;
 		longDesc = lng;
-		enabled=true;
+		enabled = true;
 	}
 
 	public abstract void setValue(String val) throws ParamException;
+
 	public abstract String getValue();
+
 	public abstract String getDefaultValue();
+
 	public abstract void clear();
+
 	public abstract boolean empty();
 
-	public static boolean loading=false;
+	public static boolean loading = false;
 
 	protected void warn(String warning) {
-		if (! loading) Console.errorOutput("WARNING: "+warning);
+		if (!loading) {
+			Console.errorOutput("WARNING: " + warning);
+		}
 	}
 
 	public String getNiceName() {
 
 		String result = "";
 		// remove leading number
-		int i = ('0'<=name.charAt(0))&&(name.charAt(0)<='9') ? 1 : 0;
+		int i = ('0' <= name.charAt(0)) && (name.charAt(0) <= '9') ? 1 : 0;
 		for (; i < name.length(); i++) {
 			char c = name.charAt(i);
-			if(('A'<=c) && (c<='Z')) {
+			if (('A' <= c) && (c <= 'Z')) {
 				result += " " + c;
 			} else {
 				result += c;
 			}
 		}
 		// replace 'V' at end with 'Variation'
-		if('V'==result.charAt(result.length()-1)) {
-			result = result.substring(0,result.length()-1)+"Variation";
+		if ('V' == result.charAt(result.length() - 1)) {
+			result = result.substring(0, result.length() - 1) + "Variation";
 		}
 		// replace 'Res' at end with 'Resolution'
-		if(result.substring(result.length()-3).equals("Res")) {
-			result = result.substring(0,result.length()-3)+"Resolution";
+		if (result.substring(result.length() - 3).equals("Res")) {
+			result = result.substring(0, result.length() - 3) + "Resolution";
 		}
 		// replace 'Res' at end with 'Resolution'
-		if(result.substring(result.length()-4).equals("Dist")) {
-			result = result.substring(0,result.length()-4)+"Distribution";
+		if (result.substring(result.length() - 4).equals("Dist")) {
+			result = result.substring(0, result.length() - 4) + "Distribution";
 		}
 
 		return result;
@@ -104,7 +115,7 @@ public abstract class AbstractParam {
 	}
 
 	public static String replaceCharAt(String s, int pos, char c) {
-	   return s.substring(0,pos) + c + s.substring(pos+1);
+		return s.substring(0, pos) + c + s.substring(pos + 1);
 	}
 
 	public String getGroup() {
@@ -124,7 +135,7 @@ public abstract class AbstractParam {
 	}
 
 	public String toString() {
-		if (! empty()) {
+		if (!empty()) {
 			return getValue();
 		}
 		// else
@@ -144,13 +155,13 @@ public abstract class AbstractParam {
 	}
 
 	protected void fireStateChanged() {
-		Object [] listeners = listenerList.getListenerList();
-		for (int i = listeners.length -2; i>=0; i-=2) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = listeners.length - 2; i >= 0; i -= 2) {
 			if (listeners[i] == ChangeListener.class) {
 				if (changeEvent == null) {
 					changeEvent = new ChangeEvent(this);
 				}
-				((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+				((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
 			}
 		}
 	}

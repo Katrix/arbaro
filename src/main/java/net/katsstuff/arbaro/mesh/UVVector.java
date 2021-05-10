@@ -24,17 +24,17 @@ package net.katsstuff.arbaro.mesh;
 
 /**
  * @author wdiestel
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 	<p>
+ * 	TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style - Code
+ * 	Templates
  */
 public final class UVVector {
+
 	public double u;
 	public double v;
 
 	public UVVector(double u_, double v_) {
-		u=u_;
-		v=v_;
+		u = u_;
+		v = v_;
 	}
-
 }

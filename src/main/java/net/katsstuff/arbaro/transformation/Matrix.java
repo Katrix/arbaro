@@ -26,65 +26,67 @@ package net.katsstuff.arbaro.transformation;
  * A 3x3 matrix class
  *
  * @author Wolfram Diestel
- *
  */
 public final class Matrix {
-	final static int X=0;
-	final static int Y=1;
-	final static int Z=2;
+
+	final static int X = 0;
+	final static int Y = 1;
+	final static int Z = 2;
 
 	private double[] data;
 
 	public Matrix() {
-		data = new double[(Z+1)*(Z+1)];
-		for (int r=X; r<=Z; r++) {
-			for (int c=X; c<=Z; c++) {
-				data[r*3+c] = c==r? 1:0;
+		data = new double[(Z + 1) * (Z + 1)];
+		for (int r = X; r <= Z; r++) {
+			for (int c = X; c <= Z; c++) {
+				data[r * 3 + c] = c == r ? 1 : 0;
 			}
 		}
 	}
 
-	public Matrix(double xx, double xy, double xz,
-			double yx, double yy, double yz,
-			double zx, double zy, double zz) {
-		data = new double[(Z+1)*(Z+1)];
+	public Matrix(
+		double xx, double xy, double xz,
+		double yx, double yy, double yz,
+		double zx, double zy, double zz
+	) {
+		data = new double[(Z + 1) * (Z + 1)];
 
-		data[X*3+X] = xx;
-		data[X*3+Y] = xy;
-		data[X*3+Z] = xz;
-		data[Y*3+X] = yx;
-		data[Y*3+Y] = yy;
-		data[Y*3+Z] = yz;
-		data[Z*3+X] = zx;
-		data[Z*3+Y] = zy;
-		data[Z*3+Z] = zz;
+		data[X * 3 + X] = xx;
+		data[X * 3 + Y] = xy;
+		data[X * 3 + Z] = xz;
+		data[Y * 3 + X] = yx;
+		data[Y * 3 + Y] = yy;
+		data[Y * 3 + Z] = yz;
+		data[Z * 3 + X] = zx;
+		data[Z * 3 + Y] = zy;
+		data[Z * 3 + Z] = zz;
 	}
 
 	public String toString() {
-		return "x: "+row(X)+" y: "+row(Y)+" z: "+row(Z);
+		return "x: " + row(X) + " y: " + row(Y) + " z: " + row(Z);
 	}
 
 	public Vector row(int r) {
-		return new Vector(data[r*3+X],data[r*3+Y],data[r*3+Z]);
+		return new Vector(data[r * 3 + X], data[r * 3 + Y], data[r * 3 + Z]);
 	}
 
 	public Vector col(int c) {
-		return new Vector(data[X*3+c],data[Y*3+c],data[Z*3+c]);
+		return new Vector(data[X * 3 + c], data[Y * 3 + c], data[Z * 3 + c]);
 	}
 
 	public double get(int r, int c) {
-		return data[r*3+c];
+		return data[r * 3 + c];
 	}
 
-	public void set(int r, int c, double value)  {
-		data[r*3+c] = value;
+	public void set(int r, int c, double value) {
+		data[r * 3 + c] = value;
 	}
 
 	public Matrix transpose() {
 		Matrix T = new Matrix();
-		for (int r=X; r<=Z; r++) {
-			for (int c=X; c<=Z; c++) {
-				T.set(r,c,data[c*3+r]);
+		for (int r = X; r <= Z; r++) {
+			for (int c = X; c <= Z; c++) {
+				T.set(r, c, data[c * 3 + r]);
 			}
 		}
 		return T;
@@ -94,9 +96,9 @@ public final class Matrix {
 		// scales the Matrix with a factor
 		Matrix R = new Matrix();
 
-		for (int r=X; r<=Z; r++) {
-			for (int c=X; c<=Z; c++) {
-				R.set(r,c,data[r*3+c]*factor);
+		for (int r = X; r <= Z; r++) {
+			for (int c = X; c <= Z; c++) {
+				R.set(r, c, data[r * 3 + c] * factor);
 			}
 		}
 		return R;
@@ -106,9 +108,9 @@ public final class Matrix {
 		//returns the Matrix product
 		Matrix R = new Matrix();
 
-		for (int r=X; r<=Z; r++) {
-			for (int c=X; c<=Z; c++) {
-				R.set(r,c,row(r).prod(M.col(c)));
+		for (int r = X; r <= Z; r++) {
+			for (int c = X; c <= Z; c++) {
+				R.set(r, c, row(r).prod(M.col(c)));
 			}
 		}
 
@@ -124,9 +126,9 @@ public final class Matrix {
 	public Matrix add(Matrix M) {
 		Matrix R = new Matrix();
 
-		for (int r=X; r<=Z; r++) {
-			for (int c=X; c<=Z; c++) {
-				R.set(r,c,data[r*3+c]+M.get(r,c));
+		for (int r = X; r <= Z; r++) {
+			for (int c = X; c <= Z; c++) {
+				R.set(r, c, data[r * 3 + c] + M.get(r, c));
 			}
 		}
 		return R;
@@ -139,7 +141,7 @@ public final class Matrix {
 	 * @return The product of the Matrix and the vector
 	 */
 	public Vector prod(Vector v) {
-		return new Vector(row(X).prod(v),row(Y).prod(v),row(Z).prod(v));
+		return new Vector(row(X).prod(v), row(Y).prod(v), row(Z).prod(v));
 	}
 
 	/**
@@ -149,7 +151,7 @@ public final class Matrix {
 	 * @return The Matrix divided by the value
 	 */
 	public Matrix div(double factor) {
-		return mul(1/factor);
+		return mul(1 / factor);
 	}
 
 	/**
@@ -165,11 +167,11 @@ public final class Matrix {
 	public Vector getScale() {
 		// Returns the scale of the matrix
 		Vector scale = new Vector();
-		for (int r=X; r<=Z; r++) {
-			int iX = r*3 + X;
-			int iY = r*3 + Y;
-			int iZ = r*3 + Z;
-			scale.set(r, Math.sqrt(data[iX]*data[iX] + data[iY]*data[iY] + data[iZ]*data[iZ]));
+		for (int r = X; r <= Z; r++) {
+			int iX = r * 3 + X;
+			int iY = r * 3 + Y;
+			int iZ = r * 3 + Z;
+			scale.set(r, Math.sqrt(data[iX] * data[iX] + data[iY] * data[iY] + data[iZ] * data[iZ]));
 		}
 		return scale;
 	}

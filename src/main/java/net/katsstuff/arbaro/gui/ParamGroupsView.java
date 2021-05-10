@@ -28,25 +28,28 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.*;
-
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import net.katsstuff.arbaro.params.AbstractParam;
 
 
 class GroupNode extends DefaultMutableTreeNode {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	String groupName;
 	String groupLabel;
 	int groupLevel;
-	
+
 	public GroupNode(String name, String label, int level) {
 		super(label);
-		groupName=name;
-		groupLabel=label;
+		groupName = name;
+		groupLabel = label;
 		groupLevel = level;
 	}
-	
+
 	public String getGroupName() {
 		return groupName;
 	}
@@ -54,48 +57,46 @@ class GroupNode extends DefaultMutableTreeNode {
 	public int getGroupLevel() {
 		return groupLevel;
 	}
-
 }
 
 /**
  * @author wdiestel
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * 	<p>
+ * 	TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style - Code
+ * 	Templates
  */
 public final class ParamGroupsView extends JTree {
+
 	private static final long serialVersionUID = 1L;
 
-	
-	
 //	private final static String[] levels = {"general parameters",
 //			"first level", "second level", "third level", "fourth level"};
-	
+
 	static DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-	
-	static final Color bgClr = new Color(250,250,240);
-	
+
+	static final Color bgClr = new Color(250, 250, 240);
+
 	// ParamValueTable paramValueEditor;
 	ChangeEvent changeEvent;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public ParamGroupsView() {
 		super(root);
 		createNodes();
 		// setMinimumSize(new Dimension(100,100));
 		setBackground(bgClr);
-		
+
 		setRootVisible(false);
 		setShowsRootHandles(true);
 		setExpandsSelectedPaths(true);
 		getSelectionModel().setSelectionMode
-	            (TreeSelectionModel.SINGLE_TREE_SELECTION);
-		
+			(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
 		//ImageIcon leafIcon = createImageIcon("images/middle.gif");
 		// show no icons in the groups tree
-		DefaultTreeCellRenderer renderer = 
+		DefaultTreeCellRenderer renderer =
 			new DefaultTreeCellRenderer();
 		renderer.setLeafIcon(null);
 		renderer.setOpenIcon(null);
@@ -105,83 +106,89 @@ public final class ParamGroupsView extends JTree {
 		// renderer.setBackgroundSelectionColor(bgClr);
 		setCellRenderer(renderer);
 		//}
-		
+
 		addTreeSelectionListener(
-				new TreeSelectionListener() {
-					public void valueChanged(TreeSelectionEvent e) {
-						DefaultMutableTreeNode node = 
-							(DefaultMutableTreeNode)
+			new TreeSelectionListener() {
+				public void valueChanged(TreeSelectionEvent e) {
+					DefaultMutableTreeNode node =
+						(DefaultMutableTreeNode)
 							getLastSelectedPathComponent();
-						
-						if (node == null) return;
-						
-//						if (node.isLeaf()) {
-							fireStateChanged();
-//						}
+
+					if (node == null) {
+						return;
 					}
+
+//						if (node.isLeaf()) {
+					fireStateChanged();
+//						}
 				}
-				
+			}
+
 		);
 	}
-	
+
 	public String getGroupName() throws Exception {
-		DefaultMutableTreeNode node = 
+		DefaultMutableTreeNode node =
 			(DefaultMutableTreeNode)
-			getLastSelectedPathComponent();
+				getLastSelectedPathComponent();
 		if (!node.isRoot()) {
-			return ((GroupNode)node).getGroupName();
+			return ((GroupNode) node).getGroupName();
 		}
 		// no group selected
 		throw new Exception("no group selected");
 	}
-	
+
 	public int getGroupLevel() throws Exception {
 		// FIXME: higher nodes could return the level too
-		DefaultMutableTreeNode node = 
+		DefaultMutableTreeNode node =
 			(DefaultMutableTreeNode)
-			getLastSelectedPathComponent();
+				getLastSelectedPathComponent();
 		if (!node.isRoot()) {
-			return ((GroupNode)node).getGroupLevel();
+			return ((GroupNode) node).getGroupLevel();
 		}
 		// no group selected
 		throw new Exception("no group selected");
-	}	
-	
+	}
+
 	private void createNodes() {
-		
-		GroupNode general = new GroupNode("","General",AbstractParam.GENERAL);
+
+		GroupNode general = new GroupNode("", "General", AbstractParam.GENERAL);
 		root.add(general);
-		
+
 		GroupNode firstGroup =
-			addGroup(general,"SHAPE","Tree shape",AbstractParam.GENERAL);
-		
-		addGroup(general,"TRUNK","Trunk radius",AbstractParam.GENERAL);
-		addGroup(general,"LEAVES","Leaves",AbstractParam.GENERAL);
+			addGroup(general, "SHAPE", "Tree shape", AbstractParam.GENERAL);
+
+		addGroup(general, "TRUNK", "Trunk radius", AbstractParam.GENERAL);
+		addGroup(general, "LEAVES", "Leaves", AbstractParam.GENERAL);
 		//addGroup(general,"LEAVESADD","Leaf details",AbstractParam.GENERAL);
-		addGroup(general,"PRUNING","Pruning/Envelope",AbstractParam.GENERAL);
+		addGroup(general, "PRUNING", "Pruning/Envelope", AbstractParam.GENERAL);
 		//addGroup(general,"MISC","Miscellaneous",AbstractParam.GENERAL);
-		addGroup(general,"QUALITY","Quality",AbstractParam.GENERAL);
-		
-		for (int i=0; i<4; i++) {
-			String lName = "Level "+i;
-			if (i==0) lName += " (trunk)";
-			GroupNode level = new GroupNode("",lName,i);
+		addGroup(general, "QUALITY", "Quality", AbstractParam.GENERAL);
+
+		for (int i = 0; i < 4; i++) {
+			String lName = "Level " + i;
+			if (i == 0) {
+				lName += " (trunk)";
+			}
+			GroupNode level = new GroupNode("", lName, i);
 			root.add(level);
-			
-			addGroup(level,"LENTAPER","Length and taper",i);
-			addGroup(level,"CURVATURE","Curvature",i);
-			addGroup(level,"SPLITTING","Splitting",i);
-			addGroup(level,"BRANCHING","Branching",i);
+
+			addGroup(level, "LENTAPER", "Length and taper", i);
+			addGroup(level, "CURVATURE", "Curvature", i);
+			addGroup(level, "SPLITTING", "Splitting", i);
+			addGroup(level, "BRANCHING", "Branching", i);
 		}
-		
+
 		//scrollPathToVisible(new TreePath(firstGroup.getPath()));
 		setSelectionPath(new TreePath(firstGroup.getPath()));
 //		expandPath(root.getPath());
 	}
-	
-	private GroupNode addGroup(DefaultMutableTreeNode parent,String groupName, String groupLabel,
-			int groupLevel) {
-		GroupNode groupNode = new GroupNode(groupName,groupLabel,groupLevel);
+
+	private GroupNode addGroup(
+		DefaultMutableTreeNode parent, String groupName, String groupLabel,
+		int groupLevel
+	) {
+		GroupNode groupNode = new GroupNode(groupName, groupLabel, groupLevel);
 		// FIXME: add more code here
 		parent.add(groupNode);
 		return groupNode;
@@ -190,21 +197,20 @@ public final class ParamGroupsView extends JTree {
 	public void addChangeListener(ChangeListener l) {
 		listenerList.add(ChangeListener.class, l);
 	}
-	
+
 	public void removeChangeListener(ChangeListener l) {
 		listenerList.remove(ChangeListener.class, l);
 	}
-	
+
 	protected void fireStateChanged() {
-		Object [] listeners = listenerList.getListenerList();
-		for (int i = listeners.length -2; i>=0; i-=2) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = listeners.length - 2; i >= 0; i -= 2) {
 			if (listeners[i] == ChangeListener.class) {
 				if (changeEvent == null) {
 					changeEvent = new ChangeEvent(this);
 				}
-				((ChangeListener)listeners[i+1]).stateChanged(changeEvent);
+				((ChangeListener) listeners[i + 1]).stateChanged(changeEvent);
 			}
 		}
 	}
-	
 }

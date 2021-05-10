@@ -31,9 +31,9 @@ import java.io.PrintWriter;
 
 public class LevelParams {
 	// parameters for the 4 levels
-	
+
 	public int level;
-	
+
 	// stem length and appearance
 	public double nTaper; // taper to a point (cone)
 	public int nCurveRes;
@@ -42,72 +42,71 @@ public class LevelParams {
 	public double nCurveBack;
 	public double nLength;
 	public double nLengthV;
-	
+
 	// splitting
 	public double nSegSplits;
 	public double nSplitAngle;
 	public double nSplitAngleV;
-	
+
 	// substems
 	public int nBranches;
-	
+
 	/**
 	 * <code>nBranchDist</code>
-	 * is the substem distance within a segment 
+	 * is the substem distance within a segment
 	 * <ul>
 	 * <li>0: all substems at segment base</li>
 	 * <li>1: distributed over full segment</li>
 	 * </ul>
-	 * 
 	 */
-	public double nBranchDist; 
-	
+	public double nBranchDist;
+
 	public double nDownAngle;
 	public double nDownAngleV;
 	public double nRotate;
 	public double nRotateV;
-	
+
 	/**
 	 * <code>mesh_points</code> -
 	 * how many meshpoints per cross-section
 	 */
-	public int mesh_points; 
-	
+	public int mesh_points;
+
 	// Error values for splitting, substem and leaf distribution
 	public double splitErrorValue;
 	public double substemErrorValue;
-	
+
 	/**
 	 * random generators
 	 */
-	public Random random; 
-	
+	public Random random;
+
 	// param DB
 	java.util.Hashtable paramDB;
-	
-	
+
+
 	// variables to store state when making prune test
 	private long randstate;
 	private double spliterrval;
-	
+
 	public LevelParams(int l, java.util.Hashtable parDB) {
 		level = l;
 		paramDB = parDB;
-		
+
 		randstate = Long.MIN_VALUE;
 		spliterrval = Double.NaN;
 	}
-	
+
 	public long initRandom(long seed) {
 		random = new Random(seed);
 		return random.nextLong();
 	}
-	
+
 	public double var(double variation) {
 		// return a random variation value from (-variation,+variation)
-		return random.uniform(-variation,variation);
+		return random.uniform(-variation, variation);
 	}
-	
+
 	public void saveState() {
 		/*
 		 if (Double.isNaN(spliterrval)) {
@@ -117,75 +116,75 @@ public class LevelParams {
 		 }
 		 */
 		randstate = random.getState();
-		spliterrval= splitErrorValue;
+		spliterrval = splitErrorValue;
 	}
-	
+
 	public void restoreState() {
 		if (Double.isNaN(spliterrval)) {
 			System.err.println("BUG: there is no state saved, cannot restore.");
 			System.exit(1);
 		}
 		random.setState(randstate);
-		splitErrorValue=spliterrval;
+		splitErrorValue = spliterrval;
 	}
-	
+
 	// help methods for output of params
 	private void writeParamXml(PrintWriter w, String name, int value) {
 		String fullname = "" + level + name.substring(1);
-		w.println("    <param name='" + fullname + "' value='"+value+"'/>");
+		w.println("    <param name='" + fullname + "' value='" + value + "'/>");
 	}
-	
+
 	private void writeParamXML(PrintWriter w, String name, double value) {
 		String fullname = "" + level + name.substring(1);
-		w.println("    <param name='" + fullname + "' value='"+value+"'/>");
+		w.println("    <param name='" + fullname + "' value='" + value + "'/>");
 	}
-	
+
 	void toXML(PrintWriter w, boolean leafLevelOnly) {
-		w.println("    <!-- level " + level  + " -->");
-		writeParamXML(w,"nDownAngle",nDownAngle);
-		writeParamXML(w,"nDownAngleV",nDownAngleV);
-		writeParamXML(w,"nRotate",nRotate);
-		writeParamXML(w,"nRotateV",nRotateV);
-		if (! leafLevelOnly) {
-			writeParamXml(w,"nBranches",nBranches);
-			writeParamXML(w,"nBranchDist",nBranchDist);
+		w.println("    <!-- level " + level + " -->");
+		writeParamXML(w, "nDownAngle", nDownAngle);
+		writeParamXML(w, "nDownAngleV", nDownAngleV);
+		writeParamXML(w, "nRotate", nRotate);
+		writeParamXML(w, "nRotateV", nRotateV);
+		if (!leafLevelOnly) {
+			writeParamXml(w, "nBranches", nBranches);
+			writeParamXML(w, "nBranchDist", nBranchDist);
 			//	    xml_param(w,"nBranchDistV",nBranchDistV);
-			writeParamXML(w,"nLength",nLength);
-			writeParamXML(w,"nLengthV",nLengthV);
-			writeParamXML(w,"nTaper",nTaper);
-			writeParamXML(w,"nSegSplits",nSegSplits);
-			writeParamXML(w,"nSplitAngle",nSplitAngle);
-			writeParamXML(w,"nSplitAngleV",nSplitAngleV);
-			writeParamXml(w,"nCurveRes",nCurveRes);
-			writeParamXML(w,"nCurve",nCurve);
-			writeParamXML(w,"nCurveBack",nCurveBack);
-			writeParamXML(w,"nCurveV",nCurveV);
+			writeParamXML(w, "nLength", nLength);
+			writeParamXML(w, "nLengthV", nLengthV);
+			writeParamXML(w, "nTaper", nTaper);
+			writeParamXML(w, "nSegSplits", nSegSplits);
+			writeParamXML(w, "nSplitAngle", nSplitAngle);
+			writeParamXML(w, "nSplitAngleV", nSplitAngleV);
+			writeParamXml(w, "nCurveRes", nCurveRes);
+			writeParamXML(w, "nCurve", nCurve);
+			writeParamXML(w, "nCurveBack", nCurveBack);
+			writeParamXML(w, "nCurveV", nCurveV);
 		}
 	}
-	
+
 	// help method for loading params
 	private int intParam(String name) throws ParamException {
 		String fullname = "" + level + name.substring(1);
-		IntParam par = (IntParam)paramDB.get(fullname);
+		IntParam par = (IntParam) paramDB.get(fullname);
 		if (par != null) {
 			return par.intValue();
-		} 
-			
-		throw new ParamException("bug: param "+fullname+" not found!");
+		}
+
+		throw new ParamException("bug: param " + fullname + " not found!");
 	}
-	
+
 	private double dblParam(String name) throws ParamException {
 		String fullname = "" + level + name.substring(1);
-		FloatParam par = (FloatParam)paramDB.get(fullname);
+		FloatParam par = (FloatParam) paramDB.get(fullname);
 		if (par != null) {
 			return par.doubleValue();
-		} 
-			
-		throw new ParamException("bug: param "+fullname+" not found!");
+		}
+
+		throw new ParamException("bug: param " + fullname + " not found!");
 	}
-	
+
 	void fromDB(boolean leafLevelOnly) throws ParamException {
-		if (! leafLevelOnly) {
+		if (!leafLevelOnly) {
 			nTaper = dblParam("nTaper");
 			nCurveRes = intParam("nCurveRes");
 			nCurve = dblParam("nCurve");
@@ -205,8 +204,6 @@ public class LevelParams {
 		nRotate = dblParam("nRotate");
 		nRotateV = dblParam("nRotateV");
 	}
-	
-	
 };
 
 

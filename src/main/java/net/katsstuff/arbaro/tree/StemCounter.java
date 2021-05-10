@@ -24,13 +24,13 @@ package net.katsstuff.arbaro.tree;
 
 /**
  * Counts the number of stems of a tree using the TreeTraversal interface
- * 
- * @author wolfram
  *
+ * @author wolfram
  */
 public class StemCounter extends DefaultTreeTraversal {
+
 	long stemCount;
-	
+
 	public long getStemCount() {
 		return stemCount;
 	}
@@ -48,5 +48,4 @@ public class StemCounter extends DefaultTreeTraversal {
 	public boolean visitLeaf(Leaf leaf) {
 		return false; // don't count leaves
 	}
-
 }

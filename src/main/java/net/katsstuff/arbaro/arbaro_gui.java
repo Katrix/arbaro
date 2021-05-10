@@ -24,7 +24,6 @@ package net.katsstuff.arbaro;
 
 import net.katsstuff.arbaro.export.Console;
 import net.katsstuff.arbaro.gui.Workplace;
-import java.lang.System;
 
 /**
  * Main class for GUI version of Arbaro. It creates a new Workplace.
@@ -32,11 +31,11 @@ import java.lang.System;
 
 public class arbaro_gui {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 		Console.setOutputLevel(Console.QUIET);
 		System.getProperties().list(System.out);
 		new Workplace();
-    }
+	}
 }
 
 

@@ -22,19 +22,48 @@
 
 package net.katsstuff.arbaro.gui;
 
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-//import java.util.zip.GZIPOutputStream;
-import javax.swing.*;
-
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import net.katsstuff.arbaro.export.Exporter;
+import net.katsstuff.arbaro.export.ExporterFactory;
+import net.katsstuff.arbaro.export.Progress;
+import net.katsstuff.arbaro.params.Params;
 import net.katsstuff.arbaro.tree.Tree;
 import net.katsstuff.arbaro.tree.TreeGenerator;
 import net.katsstuff.arbaro.tree.TreeGeneratorFactory;
-import net.katsstuff.arbaro.export.*;
-import net.katsstuff.arbaro.params.Params;
 
 public class ExportDialog {
+
 	final static int INTERVAL = 500; // 0.5 sec
 	// static Tree tree;
 	JFrame frame;
@@ -64,8 +93,8 @@ public class ExportDialog {
 	JTextField fileField;
 	JTextField sceneFileField;
 	JTextField renderFileField;
-	JTextField widthField=new JTextField(6);
-	JTextField heightField=new JTextField(6);
+	JTextField widthField = new JTextField(6);
+	JTextField heightField = new JTextField(6);
 	JButton selectSceneFile;
 	JButton selectRenderFile;
 	Timer timer;
@@ -75,7 +104,13 @@ public class ExportDialog {
 
 	String fileSep = System.getProperty("file.separator");
 
-	public ExportDialog(JFrame parent, int seed, /*ExporterFactory exporterFactory,*/ Params params, Config cfg, boolean render) {
+	public ExportDialog(
+		JFrame parent,
+		int seed, /*ExporterFactory exporterFactory,*/
+		Params params,
+		Config cfg,
+		boolean render
+	) {
 
 		//tree = tr;
 		this.params = params;
@@ -102,7 +137,7 @@ public class ExportDialog {
 //		System.getProperty("user.dir")+fileSep+"pov"));
 
 		timer = new Timer(INTERVAL, new TimerListener());
-		treeCreationTask = new TreeCreationTask(frame,config);
+		treeCreationTask = new TreeCreationTask(frame, config);
 
 		createGUI();
 		frame.setVisible(true);
@@ -113,12 +148,14 @@ public class ExportDialog {
 
 		JComponent exportPanel = createExportPanel();
 		tabbedPane.addTab("Export", null, exportPanel,
-		                  "Export options");
+			"Export options"
+		);
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
 		JComponent renderPanel = createRenderPanel();
 		tabbedPane.addTab("Render", null, renderPanel,
-        "Render options");
+			"Render options"
+		);
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_2);
 
 		if (render) {
@@ -140,94 +177,93 @@ public class ExportDialog {
 		JPanel panel = new JPanel();
 		//panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
 		panel.setLayout(new BorderLayout());
-		panel.add(tabbedPane,BorderLayout.CENTER);
-		panel.add(buttons,BorderLayout.SOUTH);
+		panel.add(tabbedPane, BorderLayout.CENTER);
+		panel.add(buttons, BorderLayout.SOUTH);
 
 		// add panel to content pane
 		Container contentPane = frame.getContentPane();
-		contentPane.add(panel,BorderLayout.CENTER);
+		contentPane.add(panel, BorderLayout.CENTER);
 
 		// add status line
 		progressbar = new Progressbar();
 		progressbar.setVisible(false);
-		contentPane.add(progressbar,BorderLayout.PAGE_END);
+		contentPane.add(progressbar, BorderLayout.PAGE_END);
 
 		frame.pack();
 	}
 
 	void formatSettings(int outputFormat) {
 		switch (outputFormat) {
-		case ExporterFactory.POV_MESH:
-			fileField.setText(fileChooser.getCurrentDirectory().getPath()
-					+fileSep+params.Species+".inc");
-			sceneCheckbox.setEnabled(true);
-			renderCheckbox.setEnabled(true);
-			smoothField.setEnabled(true);
-			tabbedPane.setEnabledAt(1,true);
-			uvStemsCheckbox.setEnabled(true);
-			uvLeavesCheckbox.setEnabled(true);
-			sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".pov");
-			renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".png");
-		break;
+			case ExporterFactory.POV_MESH:
+				fileField.setText(fileChooser.getCurrentDirectory().getPath()
+								  + fileSep + params.Species + ".inc");
+				sceneCheckbox.setEnabled(true);
+				renderCheckbox.setEnabled(true);
+				smoothField.setEnabled(true);
+				tabbedPane.setEnabledAt(1, true);
+				uvStemsCheckbox.setEnabled(true);
+				uvLeavesCheckbox.setEnabled(true);
+				sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
+									   + fileSep + params.Species + ".pov");
+				renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
+										+ fileSep + params.Species + ".png");
+				break;
 
-		case ExporterFactory.POV_CONES:
-			fileField.setText(fileChooser.getCurrentDirectory().getPath()
-					+fileSep+params.Species+".inc");
-			sceneCheckbox.setEnabled(true);
-			renderCheckbox.setEnabled(true);
-			smoothField.setEnabled(false);
-			tabbedPane.setEnabledAt(1,true);
-			uvStemsCheckbox.setEnabled(false);
-			uvLeavesCheckbox.setEnabled(false);
-			sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".pov");
-			renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".png");
-		break;
+			case ExporterFactory.POV_CONES:
+				fileField.setText(fileChooser.getCurrentDirectory().getPath()
+								  + fileSep + params.Species + ".inc");
+				sceneCheckbox.setEnabled(true);
+				renderCheckbox.setEnabled(true);
+				smoothField.setEnabled(false);
+				tabbedPane.setEnabledAt(1, true);
+				uvStemsCheckbox.setEnabled(false);
+				uvLeavesCheckbox.setEnabled(false);
+				sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
+									   + fileSep + params.Species + ".pov");
+				renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
+										+ fileSep + params.Species + ".png");
+				break;
 
-		case ExporterFactory.RIB:
-			fileField.setText(fileChooser.getCurrentDirectory().getPath()
-					+fileSep+params.Species+".rib");
-			sceneCheckbox.setEnabled(true);
-			renderCheckbox.setEnabled(true);
-			smoothField.setEnabled(true);
-			tabbedPane.setEnabledAt(1,true);
-			uvStemsCheckbox.setEnabled(true);
-			uvLeavesCheckbox.setEnabled(true);
-			sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+"_scene.rib");
-			renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".tif");
-		break;
+			case ExporterFactory.RIB:
+				fileField.setText(fileChooser.getCurrentDirectory().getPath()
+								  + fileSep + params.Species + ".rib");
+				sceneCheckbox.setEnabled(true);
+				renderCheckbox.setEnabled(true);
+				smoothField.setEnabled(true);
+				tabbedPane.setEnabledAt(1, true);
+				uvStemsCheckbox.setEnabled(true);
+				uvLeavesCheckbox.setEnabled(true);
+				sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
+									   + fileSep + params.Species + "_scene.rib");
+				renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
+										+ fileSep + params.Species + ".tif");
+				break;
 
-		case ExporterFactory.DXF:
-			fileField.setText(fileChooser.getCurrentDirectory().getPath()
-					+fileSep+params.Species+".dxf");
-			sceneCheckbox.setSelected(false);
-			sceneCheckbox.setEnabled(false);
-			renderCheckbox.setSelected(false);
-			renderCheckbox.setEnabled(false);
-			smoothField.setEnabled(true);
-			tabbedPane.setEnabledAt(1,false);
-			uvStemsCheckbox.setEnabled(false);
-			uvLeavesCheckbox.setEnabled(false);
-		break;
+			case ExporterFactory.DXF:
+				fileField.setText(fileChooser.getCurrentDirectory().getPath()
+								  + fileSep + params.Species + ".dxf");
+				sceneCheckbox.setSelected(false);
+				sceneCheckbox.setEnabled(false);
+				renderCheckbox.setSelected(false);
+				renderCheckbox.setEnabled(false);
+				smoothField.setEnabled(true);
+				tabbedPane.setEnabledAt(1, false);
+				uvStemsCheckbox.setEnabled(false);
+				uvLeavesCheckbox.setEnabled(false);
+				break;
 
-		case ExporterFactory.OBJ:
-			fileField.setText(fileChooser.getCurrentDirectory().getPath()
-					+fileSep+params.Species+".obj");
-			sceneCheckbox.setSelected(false);
-			sceneCheckbox.setEnabled(false);
-			renderCheckbox.setSelected(false);
-			renderCheckbox.setEnabled(false);
-			smoothField.setEnabled(true);
-			tabbedPane.setEnabledAt(1,false);
-			uvStemsCheckbox.setEnabled(true);
-			uvLeavesCheckbox.setEnabled(true);
-		break;
-
+			case ExporterFactory.OBJ:
+				fileField.setText(fileChooser.getCurrentDirectory().getPath()
+								  + fileSep + params.Species + ".obj");
+				sceneCheckbox.setSelected(false);
+				sceneCheckbox.setEnabled(false);
+				renderCheckbox.setSelected(false);
+				renderCheckbox.setEnabled(false);
+				smoothField.setEnabled(true);
+				tabbedPane.setEnabledAt(1, false);
+				uvStemsCheckbox.setEnabled(true);
+				uvLeavesCheckbox.setEnabled(true);
+				break;
 		}
 	}
 
@@ -240,7 +276,7 @@ public class ExportDialog {
 		GridBagLayout grid = new GridBagLayout();
 		panel.setLayout(grid);
 
-		panel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 //		panel.setBorder(BorderFactory.createCompoundBorder(
 //				BorderFactory.createRaisedBevelBorder(),
 //				BorderFactory.createEmptyBorder(30,30,30,30)));
@@ -255,7 +291,7 @@ public class ExportDialog {
 		ctext.gridx = 1;
 		ctext.ipady = 4;
 		ctext.anchor = GridBagConstraints.WEST;
-		ctext.insets = new Insets(1,5,1,5);
+		ctext.insets = new Insets(1, 5, 1, 5);
 
 		// Constraint for the choose buttons
 		GridBagConstraints cbutton = new GridBagConstraints();
@@ -263,22 +299,24 @@ public class ExportDialog {
 		cbutton.anchor = GridBagConstraints.WEST;
 
 		JLabel label;
-		int line=-1;
+		int line = -1;
 
 		// export format
 		clabel.gridy = ++line;
 		label = new JLabel("Export format:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
 		formatBox = new JComboBox(ExporterFactory.getExportFormats());
-		int format = Integer.parseInt(config.getProperty("export.format","0"));
+		int format = Integer.parseInt(config.getProperty("export.format", "0"));
 		if (render) {
-			for (int i=formatBox.getItemCount()-1; i>=ExporterFactory.DXF; i--) {
+			for (int i = formatBox.getItemCount() - 1; i >= ExporterFactory.DXF; i--) {
 				formatBox.removeItemAt(i);
 			}
-			if (format>=ExporterFactory.DXF) format=ExporterFactory.POV_MESH;
+			if (format >= ExporterFactory.DXF) {
+				format = ExporterFactory.POV_MESH;
+			}
 		}
 		formatBox.setEditable(false);
 		formatBox.setSelectedIndex(format);
@@ -288,22 +326,21 @@ public class ExportDialog {
 				formatSettings(formatBox.getSelectedIndex());
 			}
 		});
-		grid.setConstraints(formatBox,ctext);
+		grid.setConstraints(formatBox, ctext);
 		panel.add(formatBox);
-
 
 		// export file path and name
 		clabel.gridy = ++line;
 		label = new JLabel("Export to file:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
 		fileField = new JTextField(30);
 		fileField.setText(fileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".inc");
-		fileField.setMinimumSize(new Dimension(250,19));
-		grid.setConstraints(fileField,ctext);
+						  + fileSep + params.Species + ".inc");
+		fileField.setMinimumSize(new Dimension(250, 19));
+		grid.setConstraints(fileField, ctext);
 		panel.add(fileField);
 
 		cbutton.gridy = line;
@@ -311,18 +348,18 @@ public class ExportDialog {
 		selectFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				int returnVal = fileChooser.showSaveDialog(frame);
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					fileField.setText(fileChooser.getSelectedFile().getPath());
 				}
 			}
 		});
-		grid.setConstraints(selectFile,cbutton);
+		grid.setConstraints(selectFile, cbutton);
 		panel.add(selectFile);
 
 		// UV-coordinates
 		clabel.gridy = ++line;
 		label = new JLabel("UV-coordinates:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
@@ -333,7 +370,7 @@ public class ExportDialog {
 		JPanel uv = new JPanel();
 		uv.add(uvStemsCheckbox);
 		uv.add(uvLeavesCheckbox);
-		grid.setConstraints(uv,ctext);
+		grid.setConstraints(uv, ctext);
 		panel.add(uv);
 
 		// POV scene file
@@ -347,16 +384,16 @@ public class ExportDialog {
 				renderCheckbox.setSelected(e.getStateChange() == ItemEvent.SELECTED);
 			}
 		});
-		grid.setConstraints(sceneCheckbox,clabel);
+		grid.setConstraints(sceneCheckbox, clabel);
 		panel.add(sceneCheckbox);
 
 		ctext.gridy = line;
 		sceneFileField = new JTextField(30);
 		sceneFileField.setEnabled(sceneCheckbox.isSelected());
 		sceneFileField.setText(sceneFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".pov");
-		sceneFileField.setMinimumSize(new Dimension(250,19));
-		grid.setConstraints(sceneFileField,ctext);
+							   + fileSep + params.Species + ".pov");
+		sceneFileField.setMinimumSize(new Dimension(250, 19));
+		grid.setConstraints(sceneFileField, ctext);
 		panel.add(sceneFileField);
 
 		cbutton.gridy = line;
@@ -365,36 +402,36 @@ public class ExportDialog {
 		selectSceneFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				int returnVal = sceneFileChooser.showSaveDialog(frame);
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					sceneFileField.setText(sceneFileChooser.getSelectedFile().getPath());
 				}
 			}
 		});
-		grid.setConstraints(selectSceneFile,cbutton);
+		grid.setConstraints(selectSceneFile, cbutton);
 		panel.add(selectSceneFile);
 
 		// random seed
 		clabel.gridy = ++line;
 		label = new JLabel("Seed:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
-		seedField.setText(""+seed);
-		seedField.setMinimumSize(new Dimension(80,19));
-		grid.setConstraints(seedField,ctext);
+		seedField.setText("" + seed);
+		seedField.setMinimumSize(new Dimension(80, 19));
+		grid.setConstraints(seedField, ctext);
 		panel.add(seedField);
 
 		// smooth value
 		clabel.gridy = ++line;
 		label = new JLabel("Smooth value:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
 		smoothField.setText(params.getParam("Smooth").toString());
-		smoothField.setMinimumSize(new Dimension(80,19));
-		grid.setConstraints(smoothField,ctext);
+		smoothField.setMinimumSize(new Dimension(80, 19));
+		grid.setConstraints(smoothField, ctext);
 		panel.add(smoothField);
 
 		return panel;
@@ -407,7 +444,7 @@ public class ExportDialog {
 		// create GridBagLayout
 		GridBagLayout grid = new GridBagLayout();
 		panel.setLayout(grid);
-		panel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 //		panel.setBorder(BorderFactory.createCompoundBorder(
 //				BorderFactory.createRaisedBevelBorder(),
 //				BorderFactory.createEmptyBorder(30,30,30,30)));
@@ -422,7 +459,7 @@ public class ExportDialog {
 		ctext.gridx = 1;
 		ctext.ipady = 4;
 		ctext.anchor = GridBagConstraints.WEST;
-		ctext.insets = new Insets(1,5,1,5);
+		ctext.insets = new Insets(1, 5, 1, 5);
 
 		// Constraint for the choose buttons
 		GridBagConstraints cbutton = new GridBagConstraints();
@@ -430,7 +467,7 @@ public class ExportDialog {
 		cbutton.anchor = GridBagConstraints.WEST;
 
 		JLabel label;
-		int line=-1;
+		int line = -1;
 
 		// path and filename of rendered image
 		clabel.gridy = ++line;
@@ -442,16 +479,16 @@ public class ExportDialog {
 				selectRenderFile.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
 			}
 		});
-		grid.setConstraints(renderCheckbox,clabel);
+		grid.setConstraints(renderCheckbox, clabel);
 		panel.add(renderCheckbox);
 
 		ctext.gridy = line;
 		renderFileField = new JTextField(30);
 		renderFileField.setEnabled(renderCheckbox.isSelected());
 		renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
-				+fileSep+params.Species+".png");
-		renderFileField.setMinimumSize(new Dimension(250,19));
-		grid.setConstraints(renderFileField,ctext);
+								+ fileSep + params.Species + ".png");
+		renderFileField.setMinimumSize(new Dimension(250, 19));
+		grid.setConstraints(renderFileField, ctext);
 		panel.add(renderFileField);
 
 		cbutton.gridy = line;
@@ -460,42 +497,43 @@ public class ExportDialog {
 		selectRenderFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				int returnVal = renderFileChooser.showSaveDialog(frame);
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					renderFileField.setText(renderFileChooser.getSelectedFile().getPath());
 				}
 			}
 		});
-		grid.setConstraints(selectRenderFile,cbutton);
+		grid.setConstraints(selectRenderFile, cbutton);
 		panel.add(selectRenderFile);
 
 		// render width
 		clabel.gridy = ++line;
 		label = new JLabel("Image width:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
-		widthField.setText(""+ExporterFactory.getRenderW());
-		widthField.setMinimumSize(new Dimension(80,19));
-		grid.setConstraints(widthField,ctext);
+		widthField.setText("" + ExporterFactory.getRenderW());
+		widthField.setMinimumSize(new Dimension(80, 19));
+		grid.setConstraints(widthField, ctext);
 		panel.add(widthField);
 
 		// render height
 		clabel.gridy = ++line;
 		label = new JLabel("Image height:");
-		grid.setConstraints(label,clabel);
+		grid.setConstraints(label, clabel);
 		panel.add(label);
 
 		ctext.gridy = line;
-		heightField.setText(""+ExporterFactory.getRenderH());
-		heightField.setMinimumSize(new Dimension(80,19));
-		grid.setConstraints(heightField,ctext);
+		heightField.setText("" + ExporterFactory.getRenderH());
+		heightField.setMinimumSize(new Dimension(80, 19));
+		grid.setConstraints(heightField, ctext);
 		panel.add(heightField);
 
 		return panel;
 	}
 
 	class StartButtonListener implements ActionListener {
+
 		// creates the tree and writes to file when button pressed
 		public void actionPerformed(ActionEvent e) {
 			// System.err.println("seed "+seedField.getText());
@@ -505,13 +543,15 @@ public class ExportDialog {
 			// get seed, output parameters
 
 			// FIXME set progress, verbose, debug here?
-			TreeGenerator treeGenerator = new ShieldedGUITreeGenerator(frame,
-					TreeGeneratorFactory.createTreeGenerator(params));
+			TreeGenerator treeGenerator = new ShieldedGUITreeGenerator(
+				frame,
+				TreeGeneratorFactory.createTreeGenerator(params)
+			);
 //			ExporterFactory exporterFactory = new ExporterFactory();
 
-			try{
+			try {
 				treeGenerator.setSeed(Integer.parseInt(seedField.getText()));
-				treeGenerator.setParam("Smooth",smoothField.getText());
+				treeGenerator.setParam("Smooth", smoothField.getText());
 				ExporterFactory.setRenderW(Integer.parseInt(widthField.getText()));
 				ExporterFactory.setRenderH(Integer.parseInt(heightField.getText()));
 				ExporterFactory.setExportFormat(formatBox.getSelectedIndex());
@@ -523,7 +563,7 @@ public class ExportDialog {
 				//tree.setOutputPath(fileField.getText());
 			} catch (Exception exc) {
 				net.katsstuff.arbaro.export.Console.printException(exc);
-				ShowException.msgBox(frame,"Export initialization error",exc);
+				ShowException.msgBox(frame, "Export initialization error", exc);
 			}
 			// setup progress dialog
 //			progressMonitor = new ProgressMonitor(frame,"","",0,100);
@@ -536,23 +576,31 @@ public class ExportDialog {
 			cancelButton.setText("Cancel");
 
 			// start tree creation
-			System.err.println("start creating tree and writing to "+fileField.getText());
+			System.err.println("start creating tree and writing to " + fileField.getText());
 
 			File incfile = new File(fileField.getText());
 			File povfile = null;
-			if (sceneCheckbox.isSelected()) povfile = new File(sceneFileField.getText());
+			if (sceneCheckbox.isSelected()) {
+				povfile = new File(sceneFileField.getText());
+			}
 			String imgFilename = null;
-			if (renderCheckbox.isSelected()) imgFilename = renderFileField.getText();
-			treeCreationTask.start(treeGenerator,/*exporterFactory,*/incfile,povfile,imgFilename); //fileChooser.getSelectedFile());
+			if (renderCheckbox.isSelected()) {
+				imgFilename = renderFileField.getText();
+			}
+			treeCreationTask.start(treeGenerator,/*exporterFactory,*/
+				incfile,
+				povfile,
+				imgFilename); //fileChooser.getSelectedFile());
 			timer.start();
 		}
 	}
 
 	class CancelButtonListener implements ActionListener {
-		public void actionPerformed(ActionEvent e){
-			if (treeCreationTask.notActive())
+
+		public void actionPerformed(ActionEvent e) {
+			if (treeCreationTask.notActive()) {
 				frame.dispose();
-			else {
+			} else {
 				treeCreationTask.stop();
 //				progressMonitor.close();
 				Toolkit.getDefaultToolkit().beep();
@@ -566,10 +614,10 @@ public class ExportDialog {
 	}
 
 	class TimerListener implements ActionListener {
+
 		public void actionPerformed(ActionEvent event) {
 			// System.err.println("timer event "+createTreeTask.getProgress());
-			if (/*progressMonitor.isCanceled() ||*/ treeCreationTask.notActive())
-			{
+			if (/*progressMonitor.isCanceled() ||*/ treeCreationTask.notActive()) {
 				treeCreationTask.stop();
 //				progressMonitor.close();
 				progressbar.setProgress(100);
@@ -591,6 +639,7 @@ public class ExportDialog {
 }
 
 class Progressbar extends JPanel {
+
 	private static final long serialVersionUID = 1L;
 
 	JLabel label;
@@ -598,32 +647,32 @@ class Progressbar extends JPanel {
 
 	public Progressbar() {
 		super(new BorderLayout());
-		((BorderLayout)getLayout()).setHgap(20);
+		((BorderLayout) getLayout()).setHgap(20);
 
-		setBorder(BorderFactory.createEmptyBorder(10,5,5,5));
+		setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 
 		label = new JLabel("Creating tree structure");
-    	Font font = label.getFont().deriveFont(Font.PLAIN,12);
-    	label.setFont(font);
-		add(label,BorderLayout.WEST);
+		Font font = label.getFont().deriveFont(Font.PLAIN, 12);
+		label.setFont(font);
+		add(label, BorderLayout.WEST);
 
-		progressbar = new JProgressBar(0,100);
+		progressbar = new JProgressBar(0, 100);
 		progressbar.setValue(-1);
 		progressbar.setStringPainted(true);
 		progressbar.setString("");
 		progressbar.setIndeterminate(true);
-		add(progressbar,BorderLayout.CENTER);
+		add(progressbar, BorderLayout.CENTER);
 	}
 
 	public void setProgress(int val) {
 //		System.err.println("setProg "+val);
-		if (val<=0) {
+		if (val <= 0) {
 			progressbar.setIndeterminate(true);
 			progressbar.setString("");
 		} else {
 			progressbar.setIndeterminate(false);
 			progressbar.setValue(val);
-			progressbar.setString(""+val+"%");
+			progressbar.setString("" + val + "%");
 		}
 	}
 
@@ -635,8 +684,9 @@ class Progressbar extends JPanel {
 /* this class actually creates the tree and saves it to a POV file
  */
 class TreeCreationTask {
+
 	TreeGenerator treeGenerator;
-//	ExporterFactory exporterFactory;
+	//	ExporterFactory exporterFactory;
 	Progress progress;
 	//Tree tmptree;
 	PrintWriter writer;
@@ -657,7 +707,9 @@ class TreeCreationTask {
 			// may be this should be done in DoTask instead?
 			isNotActive = true;
 		}
-	};
+	}
+
+	;
 
 	TreeWorker worker;
 
@@ -665,15 +717,19 @@ class TreeCreationTask {
 		this.parent = parent;
 		renderExe = config.getProperty("povray.executable");
 		if (renderExe == null) {
-			System.err.println("Warning: Renderer executable not set up, trying \""+
-			Config.defaultRendererExe()+"\" without path");
+			System.err.println("Warning: Renderer executable not set up, trying \"" +
+							   Config.defaultRendererExe() + "\" without path");
 			renderExe = Config.defaultRendererExe();
 		}
-		isNotActive=true;
-	};
+		isNotActive = true;
+	}
 
-	public void start(TreeGenerator treeFactory/*, ExporterFactory exporterFactory*/,
-			File outFile, File sceneFile, String imgFilename) {
+	;
+
+	public void start(
+		TreeGenerator treeFactory/*, ExporterFactory exporterFactory*/,
+		File outFile, File sceneFile, String imgFilename
+	) {
 		// create new Tree copying the parameters of tree
 		try {
 			this.treeGenerator = treeFactory;
@@ -691,7 +747,6 @@ class TreeCreationTask {
 
 			worker = new TreeWorker();
 			worker.start();
-
 		} catch (Exception e) {
 			net.katsstuff.arbaro.export.Console.printException(e);
 			//ShowException(frame,"Tree creation initialization error",e);
@@ -720,6 +775,7 @@ class TreeCreationTask {
 	}
 
 	class DoTask {
+
 		void render() {
 			try {
 
@@ -737,8 +793,10 @@ class TreeCreationTask {
 					cmd[4]="+o"+renderFilename;
 					cmd[5]=scene_file.getPath();
 				}*/
-				String [] cmd = { renderExe,
-						scene_file.getPath() };
+				String[] cmd = {
+					renderExe,
+					scene_file.getPath()
+				};
 						/*"+L"+scene_file.getParent(),
 						"+w"+ExporterFactory.getRenderW(),
 						"+h"+ExporterFactory.getRenderH(),
@@ -748,13 +806,12 @@ class TreeCreationTask {
 				System.err.println("rendering...");
 				Process povProc = Runtime.getRuntime().exec(cmd);
 				BufferedReader pov_in = new BufferedReader(
-						new InputStreamReader(povProc.getErrorStream()));
+					new InputStreamReader(povProc.getErrorStream()));
 
 				String str;
 				while ((str = pov_in.readLine()) != null) {
 					System.err.println(str);
 				}
-
 			} catch (Exception e) {
 				System.err.println(e);
 				e.printStackTrace(System.err);
@@ -768,31 +825,36 @@ class TreeCreationTask {
 				Tree tree = treeGenerator.makeTree(progress);
 //				Params params = treeGenerator.getParams();
 				// export the tree
-				Exporter exporter = new ShieldedGUIExporter(parent,
-						ExporterFactory.createExporter(tree));
-				exporter.write(writer,progress);
+				Exporter exporter = new ShieldedGUIExporter(
+					parent,
+					ExporterFactory.createExporter(tree)
+				);
+				exporter.write(writer, progress);
 
 				// export rendering scene ?
 				if (scenewriter != null) {
-					exporter = new ShieldedGUIExporter(parent,
-							ExporterFactory.createSceneExporter(tree));
+					exporter = new ShieldedGUIExporter(
+						parent,
+						ExporterFactory.createSceneExporter(tree)
+					);
 
-					exporter.write(scenewriter,progress);
+					exporter.write(scenewriter, progress);
 				}
 
 				// render scene ?
-				if (renderFilename != null && renderFilename.length()>0) {
-					progress.beginPhase("Rendering tree",-1);
+				if (renderFilename != null && renderFilename.length() > 0) {
+					progress.beginPhase("Rendering tree", -1);
 					render();
 					progress.endPhase();
 				}
-
 			} catch (Exception err) {
 				System.err.println(err);
 				err.printStackTrace(System.err);
 			}
 		}
-	};
+	}
+
+	;
 }
 
 

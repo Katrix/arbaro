@@ -25,33 +25,31 @@ package net.katsstuff.arbaro.tree;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.TreeMap;
-
+import net.katsstuff.arbaro.export.Console;
 import net.katsstuff.arbaro.export.Progress;
 import net.katsstuff.arbaro.params.AbstractParam;
 import net.katsstuff.arbaro.params.Params;
-import net.katsstuff.arbaro.export.Console;
 
 /**
- * A TreeGenerator facade handling exceptions in tree generation.
- * TreeGenerator method calls are delegated to a TreeGenerator object
- * given in the constructor. Exceptions are printed to the console.
- * 
- * @author wolfram
+ * A TreeGenerator facade handling exceptions in tree generation. TreeGenerator method calls are delegated to a
+ * TreeGenerator object given in the constructor. Exceptions are printed to the console.
  *
+ * @author wolfram
  */
 public class ShieldedTreeGenerator implements TreeGenerator {
+
 	TreeGenerator treeGenerator;
-	
+
 	/**
 	 * @param treeGenerator a TreeGenerator object without exception handling
 	 */
 	public ShieldedTreeGenerator(TreeGenerator treeGenerator) {
 		this.treeGenerator = treeGenerator;
 	}
-	
+
 	/**
 	 * Print exceptions to the console using the Console class
-	 * 
+	 *
 	 * @param e the Exception to print
 	 */
 	protected void showException(Exception e) {
@@ -87,7 +85,7 @@ public class ShieldedTreeGenerator implements TreeGenerator {
 	 */
 	public TreeMap getParamGroup(int level, String group) {
 		try {
-			return treeGenerator.getParamGroup(level,group);
+			return treeGenerator.getParamGroup(level, group);
 		} catch (Exception e) {
 			showException(e);
 			return null;
@@ -157,7 +155,7 @@ public class ShieldedTreeGenerator implements TreeGenerator {
 	 */
 	public void setParam(String param, String value) {
 		try {
-			treeGenerator.setParam(param,value);
+			treeGenerator.setParam(param, value);
 		} catch (Exception e) {
 			showException(e);
 		}

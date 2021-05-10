@@ -23,24 +23,18 @@
 
 package net.katsstuff.arbaro.transformation;
 
-import java.lang.String;
-import java.lang.Math;
-
-import java.text.NumberFormat;
-import net.katsstuff.arbaro.params.FloatFormat;
-import net.katsstuff.arbaro.transformation.Vector;
-
 /**
  * A bounding box class
- *
+ * <p>
  * Based on ILM's Imath::Box C++ metaclass
  *
  * @author Moritz Moeller
  */
 public final class Box {
-	final static int X=0;
-	final static int Y=1;
-	final static int Z=2;
+
+	final static int X = 0;
+	final static int Y = 1;
+	final static int Z = 2;
 
 	private Vector min;
 	private Vector max;
@@ -64,45 +58,45 @@ public final class Box {
 	}
 
 	public void makeEmpty() {
-	    min = new Vector(Double.MAX_VALUE);
+		min = new Vector(Double.MAX_VALUE);
 		max = new Vector(Double.MIN_VALUE);
 	}
 
 	public void extendBy(Vector point) {
-		for (int i=0; i<3; i++) {
-			if ( point.get(i) < min.get(i) ) {
-				min.set(i,point.get(i));
+		for (int i = 0; i < 3; i++) {
+			if (point.get(i) < min.get(i)) {
+				min.set(i, point.get(i));
 			}
-			if ( point.get(i) > max.get(i) ) {
-				max.set(i,point.get(i));
+			if (point.get(i) > max.get(i)) {
+				max.set(i, point.get(i));
 			}
 		}
 	}
 
 	public void extendBy(Box box) {
-		for (int i=0; i<3; i++) {
-			if ( box.getMin().get(i) < min.get(i) ) {
+		for (int i = 0; i < 3; i++) {
+			if (box.getMin().get(i) < min.get(i)) {
 				min.set(i, box.getMin().get(i));
 			}
-			if ( box.getMax().get(i) > max.get(i) ) {
+			if (box.getMax().get(i) > max.get(i)) {
 				max.set(i, box.getMax().get(i));
 			}
 		}
 	}
 
 	public void extendBy(Vector point, double radius) {
-		for (int i=0; i<3; i++) {
-			if ( point.get(i)-radius < min.get(i) ) {
-				min.set(i,point.get(i)-radius);
+		for (int i = 0; i < 3; i++) {
+			if (point.get(i) - radius < min.get(i)) {
+				min.set(i, point.get(i) - radius);
 			}
-			if ( point.get(i)+radius > max.get(i) ) {
-				max.set(i,point.get(i)+radius);
+			if (point.get(i) + radius > max.get(i)) {
+				max.set(i, point.get(i) + radius);
 			}
 		}
 	}
 
 	public boolean intersects(Vector point) {
-		for (int i=0; i<3; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (point.get(i) < min.get(i) || point.get(i) > max.get(i)) {
 				return false;
 			}
@@ -111,7 +105,7 @@ public final class Box {
 	}
 
 	public boolean intersects(Box box) {
-		for (int i=0; i<3; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (box.getMax().get(i) < min.get(i) || box.getMin().get(i) > max.get(i)) {
 				return false;
 			}
@@ -131,15 +125,19 @@ public final class Box {
 	}
 
 	boolean isEmpty() {
-		for (int i=0; i<3; i++) {
-			if (max.get(i) < min.get(i)) return true;
+		for (int i = 0; i < 3; i++) {
+			if (max.get(i) < min.get(i)) {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	public boolean hasVolume() {
-		for (int i=0; i<3; i++) {
-			if (max.get(i) <= min.get(i)) return false;
+		for (int i = 0; i < 3; i++) {
+			if (max.get(i) <= min.get(i)) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -148,8 +146,10 @@ public final class Box {
 		int major = 0;
 		Vector s = size();
 
-		for (int i=1; i<3; i++) {
-			if ( s.get(i) > s.get(major) ) major = i;
+		for (int i = 1; i < 3; i++) {
+			if (s.get(i) > s.get(major)) {
+				major = i;
+			}
 		}
 
 		return major;

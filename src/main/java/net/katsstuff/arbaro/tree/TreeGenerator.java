@@ -2,10 +2,8 @@ package net.katsstuff.arbaro.tree;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
-
 import net.katsstuff.arbaro.export.Progress;
 import net.katsstuff.arbaro.params.AbstractParam;
-import net.katsstuff.arbaro.params.ParamException;
 import net.katsstuff.arbaro.params.Params;
 
 public interface TreeGenerator {
@@ -28,7 +26,7 @@ public interface TreeGenerator {
 
 	/**
 	 * Returns a parameter group
-	 * 
+	 *
 	 * @param level The branch level (0..3)
 	 * @param group The parameter group name
 	 * @return A hash table with the parameters
@@ -41,9 +39,8 @@ public interface TreeGenerator {
 
 	/**
 	 * Writes out the parameters to an XML definition file
-	 * 
+	 *
 	 * @param out The output stream
-	 * @throws ParamException
 	 */
 	// TODO: not used at the moment, may be the GUI
 	// should get a TreeGenerator as a ParamContainer
@@ -58,18 +55,15 @@ public interface TreeGenerator {
 
 	/**
 	 * Read parameter values from an XML definition file
-	 * 
+	 *
 	 * @param is The input XML stream
-	 * @throws ParamException
 	 */
 	public abstract void readParamsFromXML(InputStream is);
 
 	/**
 	 * Read parameter values from an Config style definition file
-	 * 
+	 *
 	 * @param is The input text stream
-	 * @throws ParamException
 	 */
 	public abstract void readParamsFromCfg(InputStream is);
-
 }

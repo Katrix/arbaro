@@ -22,32 +22,44 @@
 
 package net.katsstuff.arbaro;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.FileWriter;
-import java.io.File;
-
-import net.katsstuff.arbaro.tree.*;
-import net.katsstuff.arbaro.export.*;
+import net.katsstuff.arbaro.export.Console;
+import net.katsstuff.arbaro.export.Exporter;
+import net.katsstuff.arbaro.export.ExporterFactory;
+import net.katsstuff.arbaro.export.InvalidExportFormatError;
+import net.katsstuff.arbaro.export.Progress;
 import net.katsstuff.arbaro.params.Params;
+import net.katsstuff.arbaro.tree.Tree;
+import net.katsstuff.arbaro.tree.TreeGenerator;
+import net.katsstuff.arbaro.tree.TreeGeneratorFactory;
 
 /**
  * Main class for command line version of Arbaro
  */
 
 public class arbaro {
+
 	static int XMLinput = 0;
 	static int CFGinput = 1;
 	static int XMLoutput = 99;
-	static void println(String s) { System.err.println(s); }
-	static void println() { System.err.println(); }
+
+	static void println(String s) {
+		System.err.println(s);
+	}
+
+	static void println() {
+		System.err.println();
+	}
 
 	public static final String programName =
-		"Arbaro 1.9.9 - creates trees objects for rendering from xml parameter files\n"+
-		"(c) 2003-2012 by Wolfram Diestel <diestel@steloj.de> (GPL see file COPYING)\n"+
-	        "RIB support added by Moritz Moeller\n";
+		"Arbaro 1.9.9 - creates trees objects for rendering from xml parameter files\n" +
+		"(c) 2003-2012 by Wolfram Diestel <diestel@steloj.de> (GPL see file COPYING)\n" +
+		"RIB support added by Moritz Moeller\n";
 
 	static void printProgramName() {
 		println(programName);
@@ -57,7 +69,7 @@ public class arbaro {
 	// TODO need switch for adding uv-coordinates in output
 	// switches should be more similar to the actual class
 	// structure now, e.g. --exporter=OBJ (-x OBJ)
-	static void usage () {
+	static void usage() {
 		println("syntax:");
 		println("java -jar arbaro.jar [OPTIONS] <paramfile.xml> > <tree.inc>");
 		println();
@@ -128,13 +140,15 @@ public class arbaro {
 
 	private static int getExportFormat(String format) throws InvalidExportFormatError {
 		String[] formats = ExporterFactory.getShortExportFormats();
-		for (int i=0; i<formats.length; i++) {
-			if (formats[i].equals(format)) return i;
+		for (int i = 0; i < formats.length; i++) {
+			if (formats[i].equals(format)) {
+				return i;
+			}
 		}
 		throw new InvalidExportFormatError("Invalid export format given.");
 	}
 
-	public static void main (String [] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		//	try {
 
 		boolean quiet = false;
@@ -144,14 +158,14 @@ public class arbaro {
 		boolean uvStems = false;
 		int seed = 13;
 		int levels = -1;
-		int output=ExporterFactory.POV_MESH;
-		double smooth=-1;
+		int output = ExporterFactory.POV_MESH;
+		double smooth = -1;
 		int input = XMLinput;
 		String input_file = null;
 		String output_file = null;
 		String scene_file = null;
 
-		for (int i=0; i<args.length; i++) {
+		for (int i = 0; i < args.length; i++) {
 
 			if (args[i].equals("-d") || args[i].equals("--debug")) {
 				debug = true;
@@ -173,9 +187,11 @@ public class arbaro {
 			} else if (args[i].equals("-f") || args[i].equals("--format")) {
 				output = getExportFormat(args[++i]);
 			} else if (args[i].equals("--uvleaves")) {
-				uvLeaves = true; i++;
+				uvLeaves = true;
+				i++;
 			} else if (args[i].equals("--uvstems")) {
-				uvStems = true; i++;
+				uvStems = true;
+				i++;
 			} else if (args[i].equals("-s") || args[i].equals("--smooth")) {
 				smooth = new Double(args[++i]).doubleValue();
 			} else if (args[i].equals("-x") || args[i].equals("--xml")) {
@@ -187,7 +203,7 @@ public class arbaro {
 			} else if (args[i].charAt(0) == '-') {
 				printProgramName();
 				usage();
-				System.err.println("Invalid option "+args[i]+"!");
+				System.err.println("Invalid option " + args[i] + "!");
 				System.exit(1);
 			} else {
 				// rest of args should be files
@@ -197,21 +213,21 @@ public class arbaro {
 			}
 		}
 
-
 		//########## read params from XML file ################
 
-		if (! quiet) {
+		if (!quiet) {
 			printProgramName();
 		}
 
-		if (debug)
+		if (debug) {
 			Console.setOutputLevel(Console.DEBUG);
-		else if (reallyQuiet)
+		} else if (reallyQuiet) {
 			Console.setOutputLevel(Console.REALLY_QUIET);
-		else if (quiet)
+		} else if (quiet) {
 			Console.setOutputLevel(Console.QUIET);
-		else
+		} else {
 			Console.setOutputLevel(Console.VERBOSE);
+		}
 
 		TreeGenerator treeGenerator = TreeGeneratorFactory.createTreeGenerator();
 		Exporter exporter;
@@ -227,16 +243,21 @@ public class arbaro {
 			in = System.in;
 		} else {
 			Console.verboseOutput("Reading parameters from "
-					+ input_file + "...");
+								  + input_file + "...");
 			in = new FileInputStream(input_file);
 		}
 
 		// read parameters
-		if (input == CFGinput) treeGenerator.readParamsFromCfg(in);
-		else treeGenerator.readParamsFromXML(in);
+		if (input == CFGinput) {
+			treeGenerator.readParamsFromCfg(in);
+		} else {
+			treeGenerator.readParamsFromXML(in);
+		}
 
 		// FIXME: put here or earlier?
-		if (smooth>=0) treeGenerator.setParam("Smooth",new Double(smooth).toString());
+		if (smooth >= 0) {
+			treeGenerator.setParam("Smooth", new Double(smooth).toString());
+		}
 
 		PrintWriter out;
 		if (output_file == null) {
@@ -245,7 +266,7 @@ public class arbaro {
 			out = new PrintWriter(new FileWriter(new File(output_file)));
 		}
 
-		if (output==XMLoutput) {
+		if (output == XMLoutput) {
 			// save parameters in XML file, don't create tree
 			treeGenerator.writeParamsToXML(out);
 		} else {
@@ -258,15 +279,17 @@ public class arbaro {
 			ExporterFactory.setOutputStemUVs(uvStems);
 			ExporterFactory.setOutputLeafUVs(uvLeaves);
 			exporter = ExporterFactory.createExporter(tree);
-			exporter.write(out,progress);
+			exporter.write(out, progress);
 
 			if (scene_file != null) {
-				if (! quiet) System.err.println("Writing renderer scene to "+scene_file+"...");
+				if (!quiet) {
+					System.err.println("Writing renderer scene to " + scene_file + "...");
+				}
 				PrintWriter scout = new PrintWriter(new FileWriter(new File(scene_file)));
-				String image = scene_file+".tif";
+				String image = scene_file + ".tif";
 				exporter = ExporterFactory.createSceneExporter(tree);
 				ExporterFactory.setImageFilePath(image);
-				exporter.write(scout,progress);
+				exporter.write(scout, progress);
 			}
 		}
 	}

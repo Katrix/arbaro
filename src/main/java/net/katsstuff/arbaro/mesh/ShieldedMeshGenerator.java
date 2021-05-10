@@ -28,17 +28,17 @@ import net.katsstuff.arbaro.tree.Tree;
 
 /**
  * @author wolfram
- *
  */
 public class ShieldedMeshGenerator implements MeshGenerator {
+
 	private MeshGenerator meshGenerator;
-	
+
 	public boolean getUseQuads() {
 		return meshGenerator.getUseQuads();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public ShieldedMeshGenerator(MeshGenerator meshGenerator) {
 		this.meshGenerator = meshGenerator;
@@ -84,5 +84,4 @@ public class ShieldedMeshGenerator implements MeshGenerator {
 			return null;
 		}
 	}
-
 }

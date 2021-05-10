@@ -23,81 +23,84 @@
 package net.katsstuff.arbaro.params;
 
 public class IntParam extends AbstractParam {
+
 	private int min;
 	private int max;
 	private int deflt;
 	private int value;
-	
-	IntParam(String nam,int mn, int mx, int def, String grp, int lev, 
-			int ord, String sh, String lng) {
-		super(nam,grp,lev,ord,sh,lng);
+
+	IntParam(
+		String nam, int mn, int mx, int def, String grp, int lev,
+		int ord, String sh, String lng
+	) {
+		super(nam, grp, lev, ord, sh, lng);
 		min = mn;
 		max = mx;
 		deflt = def;
 		value = Integer.MIN_VALUE;
 	}
-	
+
 	public String getDefaultValue() {
 		Integer i = new Integer(deflt);
 		return i.toString();
 	}
-	
+
 	public void clear() {
 		value = Integer.MIN_VALUE;
 		fireStateChanged();
 	}
-	
+
 	public void setValue(String val) throws ParamException {
 		int i;
 		try {
 			i = Integer.parseInt(val);
 		} catch (NumberFormatException e) {
-			throw new ParamException("Error setting value of "+name+". \""+val
-					+"\" isn't a valid integer.");
+			throw new ParamException("Error setting value of " + name + ". \"" + val
+									 + "\" isn't a valid integer.");
 		}
-		
-		if (i<min) {
-			throw new ParamException("Value of "+name+" should be greater or equal to "+min);
+
+		if (i < min) {
+			throw new ParamException("Value of " + name + " should be greater or equal to " + min);
 		}
-		
-		if (i>max) {
-			throw new ParamException("Value of "+name+" should be greater or equal to "+max);
+
+		if (i > max) {
+			throw new ParamException("Value of " + name + " should be greater or equal to " + max);
 		}
-		
+
 		value = i;
 		fireStateChanged();
 	}
-	
+
 	public String getValue() {
 		Integer i = new Integer(value);
 		return i.toString();
 	}
-	
+
 	public boolean empty() {
 		return value == Integer.MIN_VALUE;
 	}
-	
+
 	public int intValue() {
 		if (empty()) {
-			warn(name+" not given, using default value("+deflt+")");
+			warn(name + " not given, using default value(" + deflt + ")");
 			// set value to default, i.e. don't warn again
-			value=deflt;
+			value = deflt;
 			fireStateChanged();
 		}
 		return value;
 	}
-	
+
 	public String getLongDesc() {
 		String desc = super.getLongDesc();
 		desc += "<br><br>";
 		if (min != Integer.MIN_VALUE) {
-			desc += "Minimum: "+min+"\n";
+			desc += "Minimum: " + min + "\n";
 		}
 		if (max != Integer.MAX_VALUE) {
-			desc += "Maximum: "+max+"\n";
+			desc += "Maximum: " + max + "\n";
 		}
 		if (deflt != Integer.MIN_VALUE) {
-			desc += "Default: "+deflt+"\n";
+			desc += "Default: " + deflt + "\n";
 		}
 		return desc;
 	}

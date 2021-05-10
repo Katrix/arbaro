@@ -26,7 +26,6 @@ import java.io.PrintWriter;
 
 /**
  * @author wolfram
- *
  */
 abstract class AbstractExporter implements Exporter {
 
@@ -53,13 +52,15 @@ abstract class AbstractExporter implements Exporter {
 	}
 	*/
 
-	public PrintWriter getWriter() { return w; }
+	public PrintWriter getWriter() {
+		return w;
+	}
 
 	public void write(PrintWriter w, Progress progress) {
-		this.w=w;
+		this.w = w;
 		this.progress = progress;
 
-		progress.beginPhase("writing tree code",-1);
+		progress.beginPhase("writing tree code", -1);
 		doWrite();
 		progress.endPhase();
 	}
@@ -72,5 +73,4 @@ abstract class AbstractExporter implements Exporter {
 			Console.progressChar();
 		}
 	}
-
 }

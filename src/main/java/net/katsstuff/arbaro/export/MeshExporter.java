@@ -27,15 +27,15 @@ import net.katsstuff.arbaro.mesh.MeshGenerator;
 
 /**
  * @author wolfram
- *
  */
 abstract class MeshExporter extends AbstractExporter {
+
 	protected MeshGenerator meshGenerator;
+
 	/**
-	 * 
+	 *
 	 */
 	public MeshExporter(MeshGenerator meshGenerator) {
 		this.meshGenerator = meshGenerator;
 	}
-
 }

@@ -24,7 +24,6 @@ package net.katsstuff.arbaro.tree;
 
 /**
  * Convenience class for TreeTraversal interface
- *
  */
 public class DefaultTreeTraversal implements TreeTraversal {
 
@@ -47,5 +46,4 @@ public class DefaultTreeTraversal implements TreeTraversal {
 	public boolean visitLeaf(Leaf leaf) {
 		return true;
 	}
-
 }
