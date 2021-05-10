@@ -1,12 +1,37 @@
-*.class
+Thumbs.db
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+#eclipse
+.project
+.classpath
+.metadata
+*.launch
+org.*
+bin
+gradle.prefs
 
-# Package Files #
-*.jar
-*.war
-*.ear
+#idea
+*.iml
+*.ipr
+*.iws
+.idea
+out
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+#gradle
+build
+.gradle
+
+#runtime
+run
+
+#sbt
+target
+project/target
+/.jvmopts
+.bsp
+
+#mac
+.DS_Store
+
+#travis
+/travis-deploy-key
+/travis-deploy-key.pub

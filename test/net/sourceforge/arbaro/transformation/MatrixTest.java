@@ -4,10 +4,10 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package net.sourceforge.arbaro.transformation;
+package net.katsstuff.arbaro.transformation;
 
 import junit.framework.TestCase;
-import net.sourceforge.arbaro.transformation.Matrix;
+import net.katsstuff.arbaro.transformation.Matrix;
 
 /**
  * @author wdiestel

@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package net.sourceforge.arbaro.transformation;
+package net.katsstuff.arbaro.transformation;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -23,7 +23,7 @@ public class AllTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"Test for net.sourceforge.arbaro.transformation");
+				"Test for net.katsstuff.arbaro.transformation");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(MatrixTest.class);
 		suite.addTestSuite(VectorTest.class);

@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package net.sourceforge.arbaro.tree.impl;
+package net.katsstuff.arbaro.tree.impl;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

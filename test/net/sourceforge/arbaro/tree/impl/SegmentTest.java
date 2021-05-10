@@ -4,20 +4,20 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package net.sourceforge.arbaro.tree.impl;
+package net.katsstuff.arbaro.tree.impl;
 
 import junit.framework.TestCase;
-//import net.sourceforge.arbaro.tree.*;
-import net.sourceforge.arbaro.params.*;
-import net.sourceforge.arbaro.export.ExporterFactory;
-import net.sourceforge.arbaro.transformation.*;
-import net.sourceforge.arbaro.tree.Tree;
-import net.sourceforge.arbaro.tree.TreeGenerator;
-import net.sourceforge.arbaro.tree.TreeGeneratorFactory;
-import net.sourceforge.arbaro.tree.impl.SegmentImpl;
-import net.sourceforge.arbaro.tree.impl.StemImpl;
-import net.sourceforge.arbaro.tree.impl.SubsegmentImpl;
-import net.sourceforge.arbaro.tree.impl.TreeImpl;
+//import net.katsstuff.arbaro.tree.*;
+import net.katsstuff.arbaro.params.*;
+import net.katsstuff.arbaro.export.ExporterFactory;
+import net.katsstuff.arbaro.transformation.*;
+import net.katsstuff.arbaro.tree.Tree;
+import net.katsstuff.arbaro.tree.TreeGenerator;
+import net.katsstuff.arbaro.tree.TreeGeneratorFactory;
+import net.katsstuff.arbaro.tree.impl.SegmentImpl;
+import net.katsstuff.arbaro.tree.impl.StemImpl;
+import net.katsstuff.arbaro.tree.impl.SubsegmentImpl;
+import net.katsstuff.arbaro.tree.impl.TreeImpl;
 
 /**
  * @author wdiestel
