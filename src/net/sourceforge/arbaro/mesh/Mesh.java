@@ -192,7 +192,8 @@ public class Mesh extends java.util.Vector {
 	}	
 	
 	
-	public Mesh(int levels) { 
+	public Mesh(int levels) {
+		levels++;
 		firstMeshPart = new int[levels];
 		for (int i=0; i<levels; i++) {
 			firstMeshPart[i]=-1;

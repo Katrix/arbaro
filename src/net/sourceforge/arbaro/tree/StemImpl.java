@@ -214,6 +214,8 @@ class StemImpl implements Stem {
 		if (stemlevel < par.Levels-1) {
 			LevelParams lpar_1 = par.getLevelParams(lpar.level+1);
 			substems = new java.util.Vector(lpar_1.nBranches);
+		} else {
+			substems = new java.util.Vector();
 		}
 
 		if (stemlevel == par.Levels-1 && par.Leaves != 0) {
@@ -516,7 +518,7 @@ class StemImpl implements Stem {
 				makeSubstems(segment);
 			}
 
-			if (! pruneTest && lpar.level==par.Levels-1 && par.Leaves!=0) {
+			if (! pruneTest && stemlevel==par.Levels-1 && par.Leaves!=0) {
 				makeLeaves(segment);
 			}
 
@@ -785,7 +787,7 @@ class StemImpl implements Stem {
 		substemRotangle = 0;
 
 		// how much leaves for this stem - not really a substem parameter
-		if (lpar.level == par.Levels-1) {
+		if (stemlevel == par.Levels-1) {
 			leavesPerSegment = leavesPerBranch() / segmentCount;
 		}
 	}
@@ -818,6 +820,8 @@ class StemImpl implements Stem {
 	 */
 
 	void makeSubstems(SegmentImpl segment) {
+		if (stemlevel == par.Levels-1) return;
+
 		// creates substems for the current segment
 		LevelParams lpar_1 = par.getLevelParams(stemlevel+1);
 
