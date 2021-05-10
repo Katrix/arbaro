@@ -27,11 +27,17 @@ import java.text.NumberFormat;
 
 public class FloatFormat {
 
+	private static final NumberFormat instance;
+
+	static {
+		NumberFormat form = NumberFormat.getNumberInstance(Locale.US);
+		form.setMaximumFractionDigits(5);
+		form.setMinimumFractionDigits(0);
+		instance = form;
+	}
+
     public static NumberFormat getInstance() {
-	NumberFormat form = NumberFormat.getNumberInstance(Locale.US);
-	form.setMaximumFractionDigits(5);
-	form.setMinimumFractionDigits(0);
-	return form;
+	return instance;
     }
 }
 
