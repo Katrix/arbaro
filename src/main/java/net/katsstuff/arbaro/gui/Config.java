@@ -39,7 +39,7 @@ class Config extends Properties {
 		String folder = System.getProperty("user.home");
 		String os = System.getProperty("os.name");
 		String filesep = System.getProperty("file.separator");
-		if (os.indexOf("Windows") >= 0) {
+		if (os.contains("Windows")) {
 			configFileName = folder + filesep + "arbaro.cfg";
 		} else {
 			configFileName = folder + filesep + ".arbarorc";
@@ -89,7 +89,7 @@ class Config extends Properties {
 
 	static public String defaultRendererExe() {
 		String os = System.getProperty("os.name");
-		if (os.indexOf("Windows") >= 0) {
+		if (os.contains("Windows")) {
 			return "pvengine.exe";
 		} else {
 			return "povray"; // Unix

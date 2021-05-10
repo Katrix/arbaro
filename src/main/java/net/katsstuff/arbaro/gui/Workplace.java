@@ -236,75 +236,64 @@ public final class Workplace {
 		valueEditor = new ParamValueTable(params);
 		leftPane.add(valueEditor);//,JSplitPane.BOTTOM);
 
-		valueEditor.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				try {
-					setModified(true);
-					previewTree.remake(true);
-					// valueEditor.noError();
+		valueEditor.addChangeListener(e -> {
+			try {
+				setModified(true);
+				previewTree.remake(true);
+				// valueEditor.noError();
 
-					// FIXME: only necessary, when species
-					// param changed
-					frame.setTitle("Arbaro [" + params.Species + "]");
-				} catch (ParamException err) {
-					Console.errorOutput(err.toString());
-					valueEditor.showError(err);
-				} catch (Exception err) {
-					Console.printException(err);
-				}
+				// FIXME: only necessary, when species
+				// param changed
+				frame.setTitle("Arbaro [" + params.Species + "]");
+			} catch (ParamException err) {
+				Console.errorOutput(err.toString());
+				valueEditor.showError(err);
+			} catch (Exception err) {
+				Console.printException(err);
 			}
 		});
-		groupsView.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				// show group params in the value table
-				try {
-					int level = groupsView.getGroupLevel();
-					String group = groupsView.getGroupName();
+		groupsView.addChangeListener(e -> {
+			// show group params in the value table
+			try {
+				int level = groupsView.getGroupLevel();
+				String group = groupsView.getGroupName();
 
-					// show parameters in value editor
-					valueEditor.showGroup(group, level);
+				// show parameters in value editor
+				valueEditor.showGroup(group, level);
 
-					// change preview trees level
-					if (level == AbstractParam.GENERAL) {
-						if (group.equals("LEAVES") || group.equals("LEAVESADD")) {
-							previewTree.setShowLevel(params.Levels);
-						} else {
-							previewTree.setShowLevel(1);
-						}
+				// change preview trees level
+				if (level == AbstractParam.GENERAL) {
+					if (group.equals("LEAVES") || group.equals("LEAVESADD")) {
+						previewTree.setShowLevel(params.Levels);
 					} else {
-						previewTree.setShowLevel(level);
+						previewTree.setShowLevel(1);
 					}
-
-					// change explaining image
-					ImageIcon icon;
-					icon = shapeIcon;
-					if (group.equals("SHAPE")) {
-						icon = shapeIcon;
-					} else if (group.equals("TRUNK")) {
-						icon = radiusIcon;
-					} else if (group.equals("LEAVES") || group.equals("LEAVESADD")) {
-						icon = leavesIcon;
-					} else if (group.equals("PRUNING")) {
-						icon = pruneIcon;
-					} else if (group.equals("MISC")) {
-						icon = miscIcon;
-					} else if (group.equals("LENTAPER")) {
-						icon = lentapIcon;
-					} else if (group.equals("CURVATURE")) {
-						icon = curveIcon;
-					} else if (group.equals("SPLITTING")) {
-						icon = splitIcon;
-					} else if (group.equals("BRANCHING")) {
-						icon = substemIcon;
-					}
-
-					imageLabel.setIcon(icon);
-					((TitledBorder) imageLabel.getBorder()).setTitle(icon.getDescription());
-
-					previewTree.remake(true);
-				} catch (Exception err) {
-					Console.printException(err);
+				} else {
+					previewTree.setShowLevel(level);
 				}
+
+				// change explaining image
+				ImageIcon icon;
+				icon = shapeIcon;
+				icon = switch (group) {
+					case "SHAPE" -> shapeIcon;
+					case "TRUNK" -> radiusIcon;
+					case "LEAVES", "LEAVESADD" -> leavesIcon;
+					case "PRUNING" -> pruneIcon;
+					case "MISC" -> miscIcon;
+					case "LENTAPER" -> lentapIcon;
+					case "CURVATURE" -> curveIcon;
+					case "SPLITTING" -> splitIcon;
+					case "BRANCHING" -> substemIcon;
+					default -> icon;
+				};
+
+				imageLabel.setIcon(icon);
+				((TitledBorder) imageLabel.getBorder()).setTitle(icon.getDescription());
+
+				previewTree.remake(true);
+			} catch (Exception err) {
+				Console.printException(err);
 			}
 		});
 
@@ -414,16 +403,14 @@ public final class Workplace {
 			frontViewWithSlider.getBackground()
 		));
 
-		rotator.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				// fast draw while adjusting rotation slider
-				frontView.setDraft(source.getValueIsAdjusting());
-				topView.setDraft(source.getValueIsAdjusting());
-				// set new rotation
-				frontView.setRotation(rotator.getValue());
-				topView.setRotation(rotator.getValue());
-			}
+		rotator.addChangeListener(e -> {
+			JSlider source = (JSlider) e.getSource();
+			// fast draw while adjusting rotation slider
+			frontView.setDraft(source.getValueIsAdjusting());
+			topView.setDraft(source.getValueIsAdjusting());
+			// set new rotation
+			frontView.setRotation(rotator.getValue());
+			topView.setRotation(rotator.getValue());
 		});
 		frontViewWithSlider.add(rotator, BorderLayout.SOUTH);
 		return frontViewWithSlider;
@@ -552,7 +539,7 @@ public final class Workplace {
 		public FileNewAction() {
 			super("New", createImageIcon("images/actions/New24.png", "New"));
 			putValue(SHORT_DESCRIPTION, "New file");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_N);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -583,8 +570,7 @@ public final class Workplace {
 					JOptionPane.ERROR_MESSAGE
 				);
 			} catch (Exception err) {
-				System.err.println(err);
-				err.printStackTrace();
+				err.printStackTrace(System.err);
 			}
 		}
 	}
@@ -596,7 +582,7 @@ public final class Workplace {
 		public FileOpenAction() {
 			super("Open...", createImageIcon("images/actions/Open24.png", "Open"));
 			putValue(SHORT_DESCRIPTION, "Open file");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_O);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -706,7 +692,7 @@ public final class Workplace {
 		public FileSaveAction() {
 			super("Save", createImageIcon("images/actions/Save24.png", "Save"));
 			putValue(SHORT_DESCRIPTION, "Save file");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_S);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -727,7 +713,7 @@ public final class Workplace {
 		public FileSaveAsAction() {
 			super("Save as...", createImageIcon("images/actions/SaveAs24.png", "SaveAs"));
 			putValue(SHORT_DESCRIPTION, "Save file as");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_A);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -744,7 +730,7 @@ public final class Workplace {
 		public ExportTreeAction() {
 			super("Export tree...", createImageIcon("images/actions/Create24.png", "Export"));
 			putValue(SHORT_DESCRIPTION, "Create and export tree");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_C);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -760,7 +746,7 @@ public final class Workplace {
 		public RenderTreeAction() {
 			super("Render tree...", createImageIcon("images/actions/Render24.png", "Render"));
 			putValue(SHORT_DESCRIPTION, "Create, export and render tree");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_R);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -777,7 +763,7 @@ public final class Workplace {
 		public SetupArbaroAction() {
 			super("Setup...", createImageIcon("images/actions/Preferences24.png", "Setup"));
 			putValue(SHORT_DESCRIPTION, "Setup Arbaro");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_S);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -792,7 +778,7 @@ public final class Workplace {
 		public QuitAction() {
 			super("Quit", null);
 			putValue(SHORT_DESCRIPTION, "Quit Arbaro");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -826,7 +812,7 @@ public final class Workplace {
 		public HelpAboutAction() {
 			super("About Arbaro...", createImageIcon("images/actions/About24.png", "About"));
 			putValue(SHORT_DESCRIPTION, "About Arbaro");
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
+			putValue(MNEMONIC_KEY, KeyEvent.VK_A);
 		}
 
 		public void actionPerformed(ActionEvent e) {

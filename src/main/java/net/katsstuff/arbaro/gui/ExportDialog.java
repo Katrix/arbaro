@@ -194,7 +194,7 @@ public class ExportDialog {
 
 	void formatSettings(int outputFormat) {
 		switch (outputFormat) {
-			case ExporterFactory.POV_MESH:
+			case ExporterFactory.POV_MESH -> {
 				fileField.setText(fileChooser.getCurrentDirectory().getPath()
 								  + fileSep + params.Species + ".inc");
 				sceneCheckbox.setEnabled(true);
@@ -207,9 +207,8 @@ public class ExportDialog {
 									   + fileSep + params.Species + ".pov");
 				renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
 										+ fileSep + params.Species + ".png");
-				break;
-
-			case ExporterFactory.POV_CONES:
+			}
+			case ExporterFactory.POV_CONES -> {
 				fileField.setText(fileChooser.getCurrentDirectory().getPath()
 								  + fileSep + params.Species + ".inc");
 				sceneCheckbox.setEnabled(true);
@@ -222,9 +221,8 @@ public class ExportDialog {
 									   + fileSep + params.Species + ".pov");
 				renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
 										+ fileSep + params.Species + ".png");
-				break;
-
-			case ExporterFactory.RIB:
+			}
+			case ExporterFactory.RIB -> {
 				fileField.setText(fileChooser.getCurrentDirectory().getPath()
 								  + fileSep + params.Species + ".rib");
 				sceneCheckbox.setEnabled(true);
@@ -237,9 +235,8 @@ public class ExportDialog {
 									   + fileSep + params.Species + "_scene.rib");
 				renderFileField.setText(renderFileChooser.getCurrentDirectory().getPath()
 										+ fileSep + params.Species + ".tif");
-				break;
-
-			case ExporterFactory.DXF:
+			}
+			case ExporterFactory.DXF -> {
 				fileField.setText(fileChooser.getCurrentDirectory().getPath()
 								  + fileSep + params.Species + ".dxf");
 				sceneCheckbox.setSelected(false);
@@ -250,9 +247,8 @@ public class ExportDialog {
 				tabbedPane.setEnabledAt(1, false);
 				uvStemsCheckbox.setEnabled(false);
 				uvLeavesCheckbox.setEnabled(false);
-				break;
-
-			case ExporterFactory.OBJ:
+			}
+			case ExporterFactory.OBJ -> {
 				fileField.setText(fileChooser.getCurrentDirectory().getPath()
 								  + fileSep + params.Species + ".obj");
 				sceneCheckbox.setSelected(false);
@@ -263,7 +259,7 @@ public class ExportDialog {
 				tabbedPane.setEnabledAt(1, false);
 				uvStemsCheckbox.setEnabled(true);
 				uvLeavesCheckbox.setEnabled(true);
-				break;
+			}
 		}
 	}
 
@@ -321,11 +317,7 @@ public class ExportDialog {
 		formatBox.setEditable(false);
 		formatBox.setSelectedIndex(format);
 
-		formatBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				formatSettings(formatBox.getSelectedIndex());
-			}
-		});
+		formatBox.addActionListener(event -> formatSettings(formatBox.getSelectedIndex()));
 		grid.setConstraints(formatBox, ctext);
 		panel.add(formatBox);
 
@@ -345,12 +337,10 @@ public class ExportDialog {
 
 		cbutton.gridy = line;
 		JButton selectFile = new JButton("Choose...");
-		selectFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				int returnVal = fileChooser.showSaveDialog(frame);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					fileField.setText(fileChooser.getSelectedFile().getPath());
-				}
+		selectFile.addActionListener(event -> {
+			int returnVal = fileChooser.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				fileField.setText(fileChooser.getSelectedFile().getPath());
 			}
 		});
 		grid.setConstraints(selectFile, cbutton);
@@ -377,12 +367,10 @@ public class ExportDialog {
 		clabel.gridy = ++line;
 		sceneCheckbox = new JCheckBox("Scene file:");
 		sceneCheckbox.setSelected(render);
-		sceneCheckbox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				sceneFileField.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-				selectSceneFile.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-				renderCheckbox.setSelected(e.getStateChange() == ItemEvent.SELECTED);
-			}
+		sceneCheckbox.addItemListener(e -> {
+			sceneFileField.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
+			selectSceneFile.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
+			renderCheckbox.setSelected(e.getStateChange() == ItemEvent.SELECTED);
 		});
 		grid.setConstraints(sceneCheckbox, clabel);
 		panel.add(sceneCheckbox);
@@ -399,12 +387,10 @@ public class ExportDialog {
 		cbutton.gridy = line;
 		selectSceneFile = new JButton("Choose...");
 		selectSceneFile.setEnabled(sceneCheckbox.isSelected());
-		selectSceneFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				int returnVal = sceneFileChooser.showSaveDialog(frame);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					sceneFileField.setText(sceneFileChooser.getSelectedFile().getPath());
-				}
+		selectSceneFile.addActionListener(event -> {
+			int returnVal = sceneFileChooser.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				sceneFileField.setText(sceneFileChooser.getSelectedFile().getPath());
 			}
 		});
 		grid.setConstraints(selectSceneFile, cbutton);
@@ -473,11 +459,9 @@ public class ExportDialog {
 		clabel.gridy = ++line;
 		renderCheckbox = new JCheckBox("Render scene to:");
 		renderCheckbox.setSelected(render);
-		renderCheckbox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				renderFileField.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-				selectRenderFile.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-			}
+		renderCheckbox.addItemListener(e -> {
+			renderFileField.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
+			selectRenderFile.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
 		});
 		grid.setConstraints(renderCheckbox, clabel);
 		panel.add(renderCheckbox);
@@ -494,12 +478,10 @@ public class ExportDialog {
 		cbutton.gridy = line;
 		selectRenderFile = new JButton("Choose...");
 		selectRenderFile.setEnabled(renderCheckbox.isSelected());
-		selectRenderFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				int returnVal = renderFileChooser.showSaveDialog(frame);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					renderFileField.setText(renderFileChooser.getSelectedFile().getPath());
-				}
+		selectRenderFile.addActionListener(event -> {
+			int returnVal = renderFileChooser.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				renderFileField.setText(renderFileChooser.getSelectedFile().getPath());
 			}
 		});
 		grid.setConstraints(selectRenderFile, cbutton);
@@ -809,7 +791,6 @@ class TreeCreationTask {
 					System.err.println(str);
 				}
 			} catch (Exception e) {
-				System.err.println(e);
 				e.printStackTrace(System.err);
 			}
 		}
@@ -844,7 +825,6 @@ class TreeCreationTask {
 					progress.endPhase();
 				}
 			} catch (Exception err) {
-				System.err.println(err);
 				err.printStackTrace(System.err);
 			}
 		}

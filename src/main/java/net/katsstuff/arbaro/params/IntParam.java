@@ -41,8 +41,7 @@ public class IntParam extends AbstractParam {
 	}
 
 	public String getDefaultValue() {
-		Integer i = new Integer(deflt);
-		return i.toString();
+		return Integer.toString(deflt);
 	}
 
 	public void clear() {
@@ -72,8 +71,7 @@ public class IntParam extends AbstractParam {
 	}
 
 	public String getValue() {
-		Integer i = new Integer(value);
-		return i.toString();
+		return Integer.toString(value);
 	}
 
 	public boolean empty() {

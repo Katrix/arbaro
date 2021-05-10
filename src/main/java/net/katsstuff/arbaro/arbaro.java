@@ -57,9 +57,11 @@ public class arbaro {
 	}
 
 	public static final String programName =
-		"Arbaro 1.9.9 - creates trees objects for rendering from xml parameter files\n" +
-		"(c) 2003-2012 by Wolfram Diestel <diestel@steloj.de> (GPL see file COPYING)\n" +
-		"RIB support added by Moritz Moeller\n";
+		"""
+			Arbaro 1.9.9 - creates trees objects for rendering from xml parameter files
+			(c) 2003-2012 by Wolfram Diestel <diestel@steloj.de> (GPL see file COPYING)
+			RIB support added by Moritz Moeller
+			""";
 
 	static void printProgramName() {
 		println(programName);
@@ -181,9 +183,9 @@ public class arbaro {
 			} else if (args[i].equals("-o") || args[i].equals("--output")) {
 				output_file = args[++i];
 			} else if (args[i].equals("-s") || args[i].equals("--seed")) {
-				seed = new Integer(args[++i]).intValue();
+				seed = Integer.parseInt(args[++i]);
 			} else if (args[i].equals("-l") || args[i].equals("--levels")) {
-				levels = new Integer(args[++i]).intValue();
+				levels = Integer.parseInt(args[++i]);
 			} else if (args[i].equals("-f") || args[i].equals("--format")) {
 				output = getExportFormat(args[++i]);
 			} else if (args[i].equals("--uvleaves")) {
@@ -193,7 +195,7 @@ public class arbaro {
 				uvStems = true;
 				i++;
 			} else if (args[i].equals("-s") || args[i].equals("--smooth")) {
-				smooth = new Double(args[++i]).doubleValue();
+				smooth = Double.parseDouble(args[++i]);
 			} else if (args[i].equals("-x") || args[i].equals("--xml")) {
 				output = XMLoutput;
 			} else if (args[i].equals("-r") || args[i].equals("--treecfg")) {
@@ -256,7 +258,7 @@ public class arbaro {
 
 		// FIXME: put here or earlier?
 		if (smooth >= 0) {
-			treeGenerator.setParam("Smooth", new Double(smooth).toString());
+			treeGenerator.setParam("Smooth", Double.toString(smooth));
 		}
 
 		PrintWriter out;

@@ -82,7 +82,7 @@ public final class ParamValueTable extends JPanel {
 
 	/********************** LeafShapeBox *****************************/
 
-	class LeafShapeBox extends JComboBox {
+	static class LeafShapeBox extends JComboBox {
 
 		private static final long serialVersionUID = 1L;
 
@@ -95,8 +95,8 @@ public final class ParamValueTable extends JPanel {
 			//fill
 			String[] items = LeafShapeParam.values();
 
-			for (int i = 0; i < items.length; i++) {
-				addItem(items[i]);
+			for (String item : items) {
+				addItem(item);
 			}
 		}
 
@@ -117,7 +117,7 @@ public final class ParamValueTable extends JPanel {
 
 	/********************** ShapeBox *****************************/
 
-	class ShapeBox extends JComboBox {
+	static class ShapeBox extends JComboBox {
 
 		private static final long serialVersionUID = 1L;
 
@@ -237,18 +237,10 @@ public final class ParamValueTable extends JPanel {
 			// paramField.setHorizontalAlignment(JTextField.RIGHT);
 
 			shapeBox = new ShapeBox(/*parent*/);
-			shapeBox.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					editingStopped();
-				}
-			});
+			shapeBox.addActionListener(e -> editingStopped());
 
 			leafShapeBox = new LeafShapeBox();
-			leafShapeBox.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					editingStopped();
-				}
-			});
+			leafShapeBox.addActionListener(e -> editingStopped());
 		}
 
 		public Object getCellEditorValue() {
@@ -261,7 +253,7 @@ public final class ParamValueTable extends JPanel {
 					param.setValue(paramField.getText());
 				}
 			} catch (Exception err) {
-				System.err.println(err);
+				err.printStackTrace(System.err);
 				showError(err);
 			}
 
@@ -293,7 +285,7 @@ public final class ParamValueTable extends JPanel {
 		}
 	}
 
-	class CellRenderer extends DefaultTableCellRenderer {
+	static class CellRenderer extends DefaultTableCellRenderer {
 
 		private static final long serialVersionUID = 1L;
 
@@ -397,10 +389,10 @@ public final class ParamValueTable extends JPanel {
 				fireStateChanged();
 			} catch (Exception e) {
 				if (e.getClass() == ParamException.class) {
-					System.err.println(e);
+					e.printStackTrace(System.err);
 					showError(e);
 				} else {
-					System.err.println(e);
+					e.printStackTrace(System.err);
 					e.printStackTrace();
 				}
 			}
@@ -462,29 +454,27 @@ public final class ParamValueTable extends JPanel {
 
 		// Ask to be notified of selection changes.
 		ListSelectionModel rowSM = table.getSelectionModel();
-		rowSM.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				//Ignore extra messages.
-				if (e.getValueIsAdjusting()) {
-					return;
-				}
+		rowSM.addListSelectionListener(e -> {
+			//Ignore extra messages.
+			if (e.getValueIsAdjusting()) {
+				return;
+			}
 
-				ListSelectionModel lsm =
-					(ListSelectionModel) e.getSource();
-				if (lsm.isSelectionEmpty()) {
-					// no rows are selected
-					helpInfo.setText("");
-					helpInfo.setLongText("");
-				} else {
-					int selectedRow = lsm.getMinSelectionIndex();
-					//selectedRow is selected
-					AbstractParam param = (AbstractParam) tableModel.getValueAt(selectedRow, 1);
-					helpInfo.setText("<html><a href=\"longDesc\">"
-									 + param.getNiceName() + "</a>: "
-									 + param.getShortDesc()
-									 + "</html>");
-					helpInfo.setLongText("<html>" + param.getLongDesc() + "</html>");
-				}
+			ListSelectionModel lsm =
+				(ListSelectionModel) e.getSource();
+			if (lsm.isSelectionEmpty()) {
+				// no rows are selected
+				helpInfo.setText("");
+				helpInfo.setLongText("");
+			} else {
+				int selectedRow = lsm.getMinSelectionIndex();
+				//selectedRow is selected
+				AbstractParam param = (AbstractParam) tableModel.getValueAt(selectedRow, 1);
+				helpInfo.setText("<html><a href=\"longDesc\">"
+								 + param.getNiceName() + "</a>: "
+								 + param.getShortDesc()
+								 + "</html>");
+				helpInfo.setLongText("<html>" + param.getLongDesc() + "</html>");
 			}
 		});
 
@@ -559,7 +549,7 @@ public final class ParamValueTable extends JPanel {
 	}
 
 
-	class HelpInfo extends JLabel {
+	static class HelpInfo extends JLabel {
 
 		private static final long serialVersionUID = 1L;
 

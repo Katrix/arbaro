@@ -50,7 +50,6 @@ final public class Console {
 
 	static synchronized public void printException(Exception e) {
 		if (outputLevel > REALLY_QUIET) {
-			System.err.println(e);
 			e.printStackTrace(System.err);
 		}
 	}

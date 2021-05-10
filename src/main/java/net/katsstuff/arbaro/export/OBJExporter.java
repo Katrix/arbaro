@@ -185,7 +185,7 @@ class OBJLeafVertexWriter extends OBJLeafWriterBase {
 	public boolean visitLeaf(Leaf l) {
 		for (int i = 0; i < leafMesh.getShapeVertexCount(); i++) {
 
-			if (type == "v") {
+			if (type.equals("v")) {
 				writeVertex(l.getTransformation().apply(leafMesh.shapeVertexAt(i).point), type);
 			} else {
 				writeVertex(l.getTransformation().apply(leafMesh.shapeVertexAt(i).normal), type);
@@ -290,7 +290,7 @@ final class OBJExporter extends MeshExporter {
 
 	private void writeStemVertices(String type) {
 
-		if (type == "vt") {
+		if (type.equals("vt")) {
 			// texture vectors
 			for (Enumeration vertices = mesh.allVertices(true);
 				vertices.hasMoreElements(); ) {
@@ -304,7 +304,7 @@ final class OBJExporter extends MeshExporter {
 				vertices.hasMoreElements(); ) {
 				Vertex vertex = (Vertex) vertices.nextElement();
 
-				if (type == "v") {
+				if (type.equals("v")) {
 					writeVertex(vertex.point, "v");
 				} else {
 					writeVertex(vertex.normal, "vn");
@@ -317,7 +317,7 @@ final class OBJExporter extends MeshExporter {
 
 	private void writeLeafVertices(String type) {
 
-		if (type == "vt") {
+		if (type.equals("vt")) {
 			// texture vectors
 			if (leafMesh.isFlat()) {
 				for (int i = 0; i < leafMesh.getShapeVertexCount(); i++) {

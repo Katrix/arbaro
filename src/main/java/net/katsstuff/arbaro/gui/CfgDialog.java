@@ -130,12 +130,10 @@ public class CfgDialog {
 
 		cbutton.gridy = line;
 		JButton selectFile = new JButton("Choose...");
-		selectFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				int returnVal = fileChooser.showSaveDialog(frame);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					pathField.setText(fileChooser.getSelectedFile().getPath());
-				}
+		selectFile.addActionListener(event -> {
+			int returnVal = fileChooser.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				pathField.setText(fileChooser.getSelectedFile().getPath());
 			}
 		});
 		grid.setConstraints(selectFile, cbutton);
@@ -158,12 +156,10 @@ public class CfgDialog {
 
 		cbutton.gridy = line;
 		selectFile = new JButton("Choose...");
-		selectFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				int returnVal = fileChooser.showSaveDialog(frame);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					fileField.setText(fileChooser.getSelectedFile().getPath());
-				}
+		selectFile.addActionListener(event -> {
+			int returnVal = fileChooser.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				fileField.setText(fileChooser.getSelectedFile().getPath());
 			}
 		});
 		grid.setConstraints(selectFile, cbutton);
@@ -227,11 +223,7 @@ public class CfgDialog {
 		okButton.addActionListener(new OKButtonListener());
 
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-			}
-		});
+		cancelButton.addActionListener(e -> frame.dispose());
 
 		JPanel buttons = new JPanel();
 		buttons.add(okButton);

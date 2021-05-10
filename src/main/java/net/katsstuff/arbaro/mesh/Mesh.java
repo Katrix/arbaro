@@ -153,14 +153,12 @@ public class Mesh extends java.util.Vector {
 		private MeshPart part;
 		private final boolean UVFaces;
 		private int startIndex;
-		private final int level;
 		private final Mesh mesh;
 
 		public FaceEnumerator(Mesh mesh, int startInx, boolean uv, int stemLevel) {
 			UVFaces = uv;
 			startIndex = startInx;
-			level = stemLevel;
-			parts = allParts(level);
+			parts = allParts(stemLevel);
 			this.mesh = mesh;
 
 			nextPart(true);
@@ -271,8 +269,8 @@ public class Mesh extends java.util.Vector {
 	public int uvCount() {
 		int cnt = 0;
 
-		for (int i = 0; i < firstMeshPart.length; i++) {
-			cnt += ((MeshPart) elementAt(firstMeshPart[i])).uvCount();
+		for (int j : firstMeshPart) {
+			cnt += ((MeshPart) elementAt(j)).uvCount();
 		}
 		return cnt;
 	}

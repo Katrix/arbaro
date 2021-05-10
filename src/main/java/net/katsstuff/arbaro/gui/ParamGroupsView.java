@@ -108,20 +108,18 @@ public final class ParamGroupsView extends JTree {
 		//}
 
 		addTreeSelectionListener(
-			new TreeSelectionListener() {
-				public void valueChanged(TreeSelectionEvent e) {
-					DefaultMutableTreeNode node =
-						(DefaultMutableTreeNode)
-							getLastSelectedPathComponent();
+			e -> {
+				DefaultMutableTreeNode node =
+					(DefaultMutableTreeNode)
+						getLastSelectedPathComponent();
 
-					if (node == null) {
-						return;
-					}
+				if (node == null) {
+					return;
+				}
 
 //						if (node.isLeaf()) {
-					fireStateChanged();
+				fireStateChanged();
 //						}
-				}
 			}
 
 		);

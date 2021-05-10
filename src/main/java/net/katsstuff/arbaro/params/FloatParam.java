@@ -38,8 +38,7 @@ public class FloatParam extends AbstractParam {
 	}
 
 	public String getDefaultValue() {
-		Double d = new Double(deflt);
-		return d.toString();
+		return Double.toString(deflt);
 	}
 
 	public void clear() {
@@ -66,8 +65,7 @@ public class FloatParam extends AbstractParam {
 	}
 
 	public String getValue() {
-		Double d = new Double(value);
-		return d.toString();
+		return Double.toString(value);
 	}
 
 	public boolean empty() {

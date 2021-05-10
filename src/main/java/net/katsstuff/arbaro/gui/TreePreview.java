@@ -87,11 +87,7 @@ public class TreePreview extends JComponent {
 
 		initRotation();
 
-		previewTree.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				repaint();
-			}
-		});
+		previewTree.addChangeListener(e -> repaint());
 	}
 
 	public void paint(Graphics g) {
@@ -257,18 +253,15 @@ public class TreePreview extends JComponent {
 			setOrigin(new Vector());
 
 			//////////// FRONT view
+			dw = previewTree.getWidth() * 2;
 			if (perspective == PERSPECTIVE_FRONT) {
 				// get width and height of the tree
-				dw = previewTree.getWidth() * 2;
 				dh = previewTree.getHeight();
 				minh = 0;
-				minw = -dw / 2;
 				///////////////// TOP view
-			} else {
-				// get width of the tree
-				dw = previewTree.getWidth() * 2;
-				minw = -dw / 2;
 			}
+			// get width of the tree
+			minw = -dw / 2;
 		} else {
 
 			// find stem which to show

@@ -46,11 +46,6 @@ class StringIndenter {
 	}
 
 	public String getIndent() {
-		StringBuffer fullIndent = new StringBuffer();
-		for (int i = 0; i < indentLevel; i++) {
-			fullIndent.append(indent);
-		}
-
-		return fullIndent.toString();
+		return String.valueOf(indent).repeat(Math.max(0, indentLevel));
 	}
 }

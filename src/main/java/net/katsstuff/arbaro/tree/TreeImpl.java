@@ -327,7 +327,7 @@ class TreeImpl implements Tree {
 				progress.setProgress(genProgress);
 			}
 		} catch (Exception e) {
-			System.err.println(e);
+			e.printStackTrace(System.err);
 		}
 	}
 }

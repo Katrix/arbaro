@@ -74,31 +74,31 @@ public abstract class AbstractParam {
 
 	public String getNiceName() {
 
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		// remove leading number
 		int i = ('0' <= name.charAt(0)) && (name.charAt(0) <= '9') ? 1 : 0;
 		for (; i < name.length(); i++) {
 			char c = name.charAt(i);
 			if (('A' <= c) && (c <= 'Z')) {
-				result += " " + c;
+				result.append(" ").append(c);
 			} else {
-				result += c;
+				result.append(c);
 			}
 		}
 		// replace 'V' at end with 'Variation'
 		if ('V' == result.charAt(result.length() - 1)) {
-			result = result.substring(0, result.length() - 1) + "Variation";
+			result = new StringBuilder(result.substring(0, result.length() - 1) + "Variation");
 		}
 		// replace 'Res' at end with 'Resolution'
-		if (result.endsWith("Res")) {
-			result = result.substring(0, result.length() - 3) + "Resolution";
+		if (result.toString().endsWith("Res")) {
+			result = new StringBuilder(result.substring(0, result.length() - 3) + "Resolution");
 		}
 		// replace 'Res' at end with 'Resolution'
-		if (result.endsWith("Dist")) {
-			result = result.substring(0, result.length() - 4) + "Distribution";
+		if (result.toString().endsWith("Dist")) {
+			result = new StringBuilder(result.substring(0, result.length() - 4) + "Distribution");
 		}
 
-		return result;
+		return result.toString();
 	}
 
 	public void setEnabled(boolean en) {

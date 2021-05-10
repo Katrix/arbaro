@@ -124,7 +124,7 @@ class StemImpl implements Stem {
 	int index; // substem number
 	java.util.Vector cloneIndex; // clone number (Integers)
 
-	private class SectionsEnumerator implements Enumeration {
+	private static class SectionsEnumerator implements Enumeration {
 
 		private final Enumeration segments;
 		private Enumeration subsegments;
@@ -277,16 +277,16 @@ class StemImpl implements Stem {
 		// for the second substem of the first clone of the trunk
 		StemImpl stem = this;
 		int lev = stemlevel;
-		String pos = "";
+		StringBuilder pos = new StringBuilder();
 		while (lev >= 0) {
 			if (stem.cloneIndex.size() > 0) {
-				String clonestr = "";
+				StringBuilder clonestr = new StringBuilder();
 				for (int i = 0; i < stem.cloneIndex.size(); i++) {
-					clonestr += "c" + ((Integer) stem.cloneIndex.elementAt(i)).toString();
+					clonestr.append("c").append(((Integer) stem.cloneIndex.elementAt(i)).toString());
 				}
-				pos = "" + stem.index + clonestr + "." + pos;
+				pos.insert(0, "" + stem.index + clonestr + ".");
 			} else {
-				pos = "" + stem.index + "." + pos;
+				pos.insert(0, "" + stem.index + ".");
 			}
 			if (lev > 0) {
 				stem = stem.parent;
@@ -294,9 +294,9 @@ class StemImpl implements Stem {
 			lev--;
 		}
 		if (pos.charAt(pos.length() - 1) == '.') {
-			pos = pos.substring(0, pos.length() - 1);
+			pos = new StringBuilder(pos.substring(0, pos.length() - 1));
 		}
-		return pos;
+		return pos.toString();
 	}
 
 	/**
@@ -344,7 +344,7 @@ class StemImpl implements Stem {
 		clone.cloneIndex.addAll(cloneIndex);
 
 		//DBG("Stem.clone(): level: "+stemlevel+" clones "+clones);
-		clone.cloneIndex.addElement(new Integer(clones.size()));
+		clone.cloneIndex.addElement(clones.size());
 		if (!pruneTest) {
 			clone.lengthChildMax = lengthChildMax;
 			//clone.substem_cnt = substem_cnt;

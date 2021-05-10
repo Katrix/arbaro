@@ -83,8 +83,6 @@ public class MeshSection extends java.util.Vector {
 		private int inx;
 		private int ninx;
 		private boolean quads;
-		private boolean uv;
-		private Face face;
 
 		public FaceEnumerator(
 			int startIndex, boolean UVFaces,
@@ -103,9 +101,8 @@ public class MeshSection extends java.util.Vector {
 				ninx = inx + size();
 			}
 			quads = useQuads;
-			uv = UVFaces;
 
-			if (uv) {
+			if (UVFaces) {
 				cnt_i = size() + 1;
 				cnt_ni = next.size() + 1;
 			} else {
@@ -136,6 +133,7 @@ public class MeshSection extends java.util.Vector {
 				throw new NoSuchElementException();
 			}
 
+			Face face;
 			if (quads && size() > 1 && next.size() == size()) {
 				face = new Face(
 					inx + i,
