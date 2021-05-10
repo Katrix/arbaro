@@ -270,7 +270,7 @@ class POVConeExporter extends AbstractExporter {
 
 	Tree tree;
 	//	Params params;
-	private String povrayDeclarationPrefix;
+	private final String povrayDeclarationPrefix;
 
 	/**
 	 *

@@ -330,7 +330,7 @@ class TreeImpl implements Tree {
 			System.err.println(e);
 		}
 	}
-};
+}
 
 
 

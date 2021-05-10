@@ -34,8 +34,8 @@ import java.io.PrintWriter;
  */
 public interface Exporter {
 
-	public abstract void write(PrintWriter w, Progress progress);
+	void write(PrintWriter w, Progress progress);
 
-	public abstract PrintWriter getWriter();
+	PrintWriter getWriter();
 }
 

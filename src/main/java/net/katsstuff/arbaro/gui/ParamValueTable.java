@@ -214,11 +214,7 @@ public final class ParamValueTable extends JPanel {
 				return this;
 			}
 		}
-
-		;
 	}
-
-	;
 
 
 	class CellEditor extends AbstractCellEditor implements TableCellEditor {
@@ -311,7 +307,7 @@ public final class ParamValueTable extends JPanel {
 				setHorizontalAlignment(LEFT);
 				setText(""
 						+ ((ShapeParam) value).intValue()
-						+ " - " + value.toString());
+						+ " - " + value);
 			} else if (value.getClass() == LeafShapeParam.class) {
 				setHorizontalAlignment(LEFT);
 				setText(value.toString());
@@ -418,8 +414,6 @@ public final class ParamValueTable extends JPanel {
 		//	        return getValueAt(0, c).getClass();
 		//	    }
 	}
-
-	;
 
 
 	public ParamValueTable(Params params) {

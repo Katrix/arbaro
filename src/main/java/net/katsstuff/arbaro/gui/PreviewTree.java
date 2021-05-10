@@ -149,13 +149,9 @@ public final class PreviewTree implements Tree {
 		return tree.getLeafStemLength();
 	}
 
-	;
-
 	public String getVertexInfo(int level) {
 		return tree.getVertexInfo(level);
 	}
-
-	;
 
 	public void setShowLevel(int l) {
 		int Levels = ((IntParam) (originalParams.getParam("Levels"))).intValue();

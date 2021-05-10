@@ -293,7 +293,7 @@ public class arbaro {
 			}
 		}
 	}
-};
+}
 
 
 

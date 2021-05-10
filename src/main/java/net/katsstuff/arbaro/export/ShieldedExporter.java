@@ -30,7 +30,7 @@ import java.io.PrintWriter;
  */
 public class ShieldedExporter implements Exporter {
 
-	private Exporter exporter;
+	private final Exporter exporter;
 
 	public ShieldedExporter(Exporter exporter) {
 		this.exporter = exporter;

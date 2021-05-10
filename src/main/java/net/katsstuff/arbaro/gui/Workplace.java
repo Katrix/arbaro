@@ -157,7 +157,6 @@ public final class Workplace {
 			params.prepare(13);
 		} catch (Exception e) {
 		}
-		;
 
 		// create frame
 		frame = new JFrame("Arbaro");
@@ -590,8 +589,6 @@ public final class Workplace {
 		}
 	}
 
-	;
-
 	class FileOpenAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -642,8 +639,6 @@ public final class Workplace {
 			}
 		}
 	}
-
-	;
 
 	boolean shouldSave() {
 		if (modified) {
@@ -724,8 +719,6 @@ public final class Workplace {
 			}
 		}
 	}
-
-	;
 
 	class FileSaveAsAction extends AbstractAction {
 

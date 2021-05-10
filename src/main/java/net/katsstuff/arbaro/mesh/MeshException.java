@@ -33,4 +33,4 @@ public class MeshException extends RuntimeException {
 	public MeshException(String msg) {
 		super(msg);
 	}
-};
+}

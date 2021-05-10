@@ -24,9 +24,9 @@ package net.katsstuff.arbaro.params;
 
 public class IntParam extends AbstractParam {
 
-	private int min;
-	private int max;
-	private int deflt;
+	private final int min;
+	private final int max;
+	private final int deflt;
 	private int value;
 
 	IntParam(

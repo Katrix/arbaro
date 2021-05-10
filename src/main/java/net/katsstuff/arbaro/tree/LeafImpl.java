@@ -106,7 +106,7 @@ class LeafImpl implements Leaf {
 	public boolean traverseTree(TreeTraversal traversal) {
 		return traversal.visitLeaf(this);
 	}
-};
+}
 
 
 

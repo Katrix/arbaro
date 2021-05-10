@@ -709,8 +709,6 @@ class TreeCreationTask {
 		}
 	}
 
-	;
-
 	TreeWorker worker;
 
 	public TreeCreationTask(Component parent, Config config) {
@@ -723,8 +721,6 @@ class TreeCreationTask {
 		}
 		isNotActive = true;
 	}
-
-	;
 
 	public void start(
 		TreeGenerator treeFactory/*, ExporterFactory exporterFactory*/,
@@ -853,8 +849,6 @@ class TreeCreationTask {
 			}
 		}
 	}
-
-	;
 }
 
 

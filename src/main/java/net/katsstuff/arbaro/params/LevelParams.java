@@ -204,7 +204,7 @@ public class LevelParams {
 		nRotate = dblParam("nRotate");
 		nRotateV = dblParam("nRotateV");
 	}
-};
+}
 
 
 

@@ -95,7 +95,7 @@ class Config extends Properties {
 			return "povray"; // Unix
 		}
 	}
-};
+}
 
 
 

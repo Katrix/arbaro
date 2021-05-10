@@ -238,7 +238,7 @@ public final class Transformation {
 		Matrix T1 = matrix.transpose();
 		return new Transformation(T1, T1.prod(vector.mul(-1)));
 	}
-};
+}
 
 
 

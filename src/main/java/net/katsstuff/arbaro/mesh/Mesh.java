@@ -50,7 +50,7 @@ public class Mesh extends java.util.Vector {
 
 	private class VertexEnumerator implements Enumeration {
 
-		private Enumeration parts;
+		private final Enumeration parts;
 		private Enumeration partVertices;
 
 		public VertexEnumerator() {
@@ -102,8 +102,8 @@ public class Mesh extends java.util.Vector {
 
 	private class PartEnumerator implements Enumeration {
 
-		private int level;
-		private Enumeration parts;
+		private final int level;
+		private final Enumeration parts;
 		private MeshPart part;
 
 		public PartEnumerator(int stemLevel) {
@@ -148,13 +148,13 @@ public class Mesh extends java.util.Vector {
 	private class FaceEnumerator implements Enumeration {
 
 		//private boolean UVFaces;
-		private Enumeration parts;
+		private final Enumeration parts;
 		private Enumeration partFaces;
 		private MeshPart part;
-		private boolean UVFaces;
+		private final boolean UVFaces;
 		private int startIndex;
-		private int level;
-		private Mesh mesh;
+		private final int level;
+		private final Mesh mesh;
 
 		public FaceEnumerator(Mesh mesh, int startInx, boolean uv, int stemLevel) {
 			UVFaces = uv;
@@ -291,7 +291,7 @@ public class Mesh extends java.util.Vector {
 		}
 		return cnt;
 	}
-};
+}
 
 
 

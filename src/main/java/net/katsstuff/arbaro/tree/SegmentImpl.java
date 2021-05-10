@@ -359,7 +359,7 @@ class SegmentImpl implements StemSection {
 
 		return points;
 	}
-};
+}
 
 
 

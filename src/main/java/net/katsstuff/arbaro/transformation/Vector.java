@@ -188,7 +188,7 @@ public final class Vector {
 			coord[Z] = v.getZ();
 		}
 	}
-};
+}
 
 
 

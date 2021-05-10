@@ -24,9 +24,9 @@ package net.katsstuff.arbaro.params;
 
 public class FloatParam extends AbstractParam {
 
-	private double min;
-	private double max;
-	private double deflt;
+	private final double min;
+	private final double max;
+	private final double deflt;
 	private double value;
 
 	FloatParam(String nam, double mn, double mx, double def, String grp, int lev, int ord, String sh, String lng) {
@@ -98,7 +98,7 @@ public class FloatParam extends AbstractParam {
 		}
 		return desc;
 	}
-};
+}
 
 
 

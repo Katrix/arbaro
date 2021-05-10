@@ -13,23 +13,23 @@ public interface Stem {
 	/**
 	 * @return an enumeration of the stems sections
 	 */
-	public abstract java.util.Enumeration sections();
+	java.util.Enumeration sections();
 
 	/**
 	 * @return an section offset for clones, because uv-Coordinates should be at same coordinates for stems and theire
 	 * 	clones
 	 */
-	public int getCloneSectionOffset();
+	int getCloneSectionOffset();
 
 	/**
 	 * a vector with the smalles coordinates of the stem
 	 */
-	public abstract Vector getMinPoint();
+	Vector getMinPoint();
 
 	/**
 	 * a vector with the heighest coordinates of the stem
 	 */
-	public abstract Vector getMaxPoint();
+	Vector getMaxPoint();
 
 	/**
 	 * The position of the stem in the tree. 0.1c2.3 means: fourth twig of the third clone of the second branch growing
@@ -37,52 +37,52 @@ public interface Stem {
 	 *
 	 * @return The stem position in the tree as a string
 	 */
-	public abstract String getTreePosition();
+	String getTreePosition();
 
 	/**
 	 * @return the stem length
 	 */
-	public abstract double getLength();
+	double getLength();
 
 	/**
 	 * @return the radius at the stem base
 	 */
-	public abstract double getBaseRadius();
+	double getBaseRadius();
 
 	/**
 	 * @return the radius at the stem peak
 	 */
-	public abstract double getPeakRadius();
+	double getPeakRadius();
 
 	/**
 	 * @return the stem level, 0 means it is a trunk
 	 */
-	public abstract int getLevel();
+	int getLevel();
 
 	/**
 	 * used with TreeTraversal interface
 	 *
 	 * @return when false stop traverse tree at this level
 	 */
-	abstract boolean traverseTree(TreeTraversal traversal);
+	boolean traverseTree(TreeTraversal traversal);
 
 	/**
 	 * @return the number leaves of the stem
 	 */
-	public abstract long getLeafCount();
+	long getLeafCount();
 
 	/**
 	 * @return true, if this stem is a clone of another stem
 	 */
-	public abstract boolean isClone();
+	boolean isClone();
 
 	/**
 	 * @return this stem should be smoothed, so output normals for Povray meshes
 	 */
-	public abstract boolean isSmooth();
+	boolean isSmooth();
 
 	/**
 	 * @return the transformation of the stem, containing the position vector and the rotation matrix of the stem base
 	 */
-	public Transformation getTransformation();
+	Transformation getTransformation();
 }

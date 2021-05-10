@@ -24,7 +24,7 @@ package net.katsstuff.arbaro.params;
 
 public class StringParam extends AbstractParam {
 
-	private String deflt;
+	private final String deflt;
 	private String value;
 
 	StringParam(

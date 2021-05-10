@@ -226,7 +226,7 @@ public class TreePreview extends JComponent {
 		class FindAStem extends DefaultTreeTraversal {
 
 			Stem found = null;
-			int level;
+			final int level;
 
 			public FindAStem(int level) {
 				this.level = level;

@@ -394,7 +394,7 @@ public class MeshSection extends java.util.Vector {
 					normal(left(i), here(i), down(i)))).normalize();
 		}
 	}
-};
+}
 
 
 

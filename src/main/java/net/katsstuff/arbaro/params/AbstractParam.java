@@ -90,11 +90,11 @@ public abstract class AbstractParam {
 			result = result.substring(0, result.length() - 1) + "Variation";
 		}
 		// replace 'Res' at end with 'Resolution'
-		if (result.substring(result.length() - 3).equals("Res")) {
+		if (result.endsWith("Res")) {
 			result = result.substring(0, result.length() - 3) + "Resolution";
 		}
 		// replace 'Res' at end with 'Resolution'
-		if (result.substring(result.length() - 4).equals("Dist")) {
+		if (result.endsWith("Dist")) {
 			result = result.substring(0, result.length() - 4) + "Distribution";
 		}
 

@@ -274,8 +274,6 @@ public class Params {
 		registerParams();
 	}
 
-	;
-
 	public Params(Params other) {
 
 		// copy values from other
@@ -1264,7 +1262,7 @@ public class Params {
 			getParam("" + i + "CurveBack").setEnabled(enable);
 		}
 	}
-};
+}
 
 
 

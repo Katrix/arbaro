@@ -5,11 +5,11 @@ import net.katsstuff.arbaro.tree.Tree;
 
 public interface MeshGenerator {
 
-	public abstract Mesh createStemMesh(Tree tree, Progress progress);
+	Mesh createStemMesh(Tree tree, Progress progress);
 
-	public abstract Mesh createStemMeshByLevel(Tree tree, Progress progress);
+	Mesh createStemMeshByLevel(Tree tree, Progress progress);
 
-	public abstract LeafMesh createLeafMesh(Tree tree, boolean useQuads);
+	LeafMesh createLeafMesh(Tree tree, boolean useQuads);
 
-	public boolean getUseQuads();
+	boolean getUseQuads();
 }

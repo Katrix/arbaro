@@ -31,7 +31,7 @@ import net.katsstuff.arbaro.tree.Tree;
  */
 public class ShieldedMeshGenerator implements MeshGenerator {
 
-	private MeshGenerator meshGenerator;
+	private final MeshGenerator meshGenerator;
 
 	public boolean getUseQuads() {
 		return meshGenerator.getUseQuads();

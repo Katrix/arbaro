@@ -15,31 +15,31 @@ public interface StemSection {
 	/**
 	 * @return the midpoint of the section
 	 */
-	public Vector getPosition();
+	Vector getPosition();
 
 	/**
 	 * @return the radius of the section (point distance from midpoint can vary when lobes are used)
 	 */
-	public double getRadius();
+	double getRadius();
 
 	/**
 	 * @return relative distance from stem origin
 	 */
-	public double getDistance();
+	double getDistance();
 
 	/**
 	 * @return the transformation for the section, giving it's position vector and rotation matrix
 	 */
-	public Transformation getTransformation();
+	Transformation getTransformation();
 
 	/**
 	 * @return the z-direction vector, it is orthogonal to the section layer
 	 */
-	public Vector getZ();
+	Vector getZ();
 
 	/**
 	 * @return the vertex points of the section. It's number is influenced by the stem level and smooth value. It's
 	 * 	distance from midpoint can vary about the radius (when lobes are used).
 	 */
-	public Vector[] getSectionPoints();
+	Vector[] getSectionPoints();
 }

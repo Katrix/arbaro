@@ -162,7 +162,7 @@ public final class Box {
 	public Vector getMax() {
 		return max;
 	}
-};
+}
 
 
 

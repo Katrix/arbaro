@@ -33,7 +33,7 @@ public final class Matrix {
 	final static int Y = 1;
 	final static int Z = 2;
 
-	private double[] data;
+	private final double[] data;
 
 	public Matrix() {
 		data = new double[(Z + 1) * (Z + 1)];
@@ -175,4 +175,4 @@ public final class Matrix {
 		}
 		return scale;
 	}
-};  // class Matrix
+}  // class Matrix

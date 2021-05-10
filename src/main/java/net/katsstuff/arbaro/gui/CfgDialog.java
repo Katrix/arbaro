@@ -273,7 +273,7 @@ public class CfgDialog {
 			}
 		}
 	}
-};
+}
 
 
 

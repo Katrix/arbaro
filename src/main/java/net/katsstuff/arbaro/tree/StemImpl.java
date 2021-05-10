@@ -37,7 +37,7 @@ class ArbaroException extends RuntimeException {
 	public ArbaroException(String errmsg) {
 		super(errmsg);
 	}
-};
+}
 
 class NotYetImplementedError extends ArbaroException {
 
@@ -46,7 +46,7 @@ class NotYetImplementedError extends ArbaroException {
 	public NotYetImplementedError(String errmsg) {
 		super(errmsg);
 	}
-};
+}
 
 
 /**
@@ -126,7 +126,7 @@ class StemImpl implements Stem {
 
 	private class SectionsEnumerator implements Enumeration {
 
-		private Enumeration segments;
+		private final Enumeration segments;
 		private Enumeration subsegments;
 
 		public SectionsEnumerator(StemImpl stem) {
@@ -1325,7 +1325,7 @@ class StemImpl implements Stem {
 			tree.minMaxTest(pt);
 		}
 	}
-};
+}
 
 
 

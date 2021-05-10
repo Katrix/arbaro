@@ -67,7 +67,7 @@ abstract class LeafShape {
 	int getFaceCount() {
 		return faces.length;
 	}
-};
+}
 
 
 /**
@@ -149,7 +149,7 @@ class DiscShape extends LeafShape {
 			}
 		}
 	}
-};
+}
 
 /**
  * An oval leaf shape having the outline of an averag leaf.
@@ -180,7 +180,7 @@ class SquareShape extends LeafShape {
 			faces[1] = new Face(0, 3, 2);
 		}
 	}
-};
+}
 
 
 /**
@@ -238,7 +238,7 @@ class SphereShape extends LeafShape {
 		faces[18] = new Face(10, 5, 9);
 		faces[19] = new Face(9, 11, 7);
 	}
-};
+}
 
 /**
  * A class for creation of a leaf in the mesh of all leaves. It is initialized with a leaf shape name. The leaf mesh is
@@ -329,7 +329,7 @@ public class LeafMesh {
 	public int getShapeFaceCount() {
 		return shape.getFaceCount();
 	}
-};
+}
 
 
 

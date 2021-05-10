@@ -8,21 +8,21 @@ import net.katsstuff.arbaro.params.Params;
 
 public interface TreeGenerator {
 
-	public abstract Tree makeTree(Progress progress);
+	Tree makeTree(Progress progress);
 
-	public abstract void setSeed(int seed);
+	void setSeed(int seed);
 
-	public abstract int getSeed();
+	int getSeed();
 
-	public abstract Params getParams();
+	Params getParams();
 
-	public abstract void setParam(String param, String value);
+	void setParam(String param, String value);
 
 	// TODO: not used at the moment, may be the GUI
 	// should get a TreeGenerator as a ParamContainer
 	// and tree maker, and not work directly with Params
 	// class
-	public abstract AbstractParam getParam(String param);
+	AbstractParam getParam(String param);
 
 	/**
 	 * Returns a parameter group
@@ -35,7 +35,7 @@ public interface TreeGenerator {
 	// should get a TreeGenerator as a ParamContainer
 	// and tree maker, and not work directly with Params
 	// class
-	public abstract java.util.TreeMap getParamGroup(int level, String group);
+	java.util.TreeMap getParamGroup(int level, String group);
 
 	/**
 	 * Writes out the parameters to an XML definition file
@@ -46,24 +46,24 @@ public interface TreeGenerator {
 	// should get a TreeGenerator as a ParamContainer
 	// and tree maker, and not work directly with Params
 	// class
-	public abstract void writeParamsToXML(PrintWriter out);
+	void writeParamsToXML(PrintWriter out);
 
 	/**
 	 * Clear all parameter values of the tree.
 	 */
-	public abstract void clearParams();
+	void clearParams();
 
 	/**
 	 * Read parameter values from an XML definition file
 	 *
 	 * @param is The input XML stream
 	 */
-	public abstract void readParamsFromXML(InputStream is);
+	void readParamsFromXML(InputStream is);
 
 	/**
 	 * Read parameter values from an Config style definition file
 	 *
 	 * @param is The input text stream
 	 */
-	public abstract void readParamsFromCfg(InputStream is);
+	void readParamsFromCfg(InputStream is);
 }
